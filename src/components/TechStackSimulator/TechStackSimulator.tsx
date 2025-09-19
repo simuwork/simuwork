@@ -5,6 +5,7 @@ import { techStacks } from '../../data/techStacks';
 import { simulationSteps } from '../../data/simulationSteps';
 import { useSimulationProgress } from '../../hooks/useSimulationProgress';
 import type { TechStack } from '../../types/simulator';
+import logo from '../../assets/logo.png';
 
 type View = 'dashboard' | 'loading' | 'simulator';
 
@@ -64,9 +65,12 @@ export const TechStackSimulator = () => {
 const DashboardView = ({ onStart }: DashboardViewProps) => (
   <div className="min-h-screen bg-gray-50 p-6">
     <div className="max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">SimuWork</h1>
-        <p className="text-xl text-gray-600">Practice real company workflows with AI-powered environments</p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:gap-6">
+        <img src={logo} alt="SimuWork logo" className="h-16 w-auto mb-4 sm:mb-0 rounded-lg shadow-sm" loading="lazy" />
+        <div>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">SimuWork</h1>
+          <p className="text-xl text-gray-600">Practice real company workflows with AI-powered environments</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -162,6 +166,7 @@ const LoadingView = ({ steps, currentStep, stack }: LoadingViewProps) => (
   <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
     <div className="text-center max-w-lg w-full">
       <div className="mb-8">
+        <img src={logo} alt="SimuWork logo" className="h-14 w-auto mx-auto mb-6 drop-shadow-md" />
         <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
         <h2 className="text-2xl font-bold text-white mb-2">Spinning up SimuWork</h2>
         <p className="text-gray-400">
@@ -249,22 +254,33 @@ const SimulatorView = ({ onComplete, stack }: SimulatorViewProps) => (
     </aside>
 
     <main className="flex-1 flex flex-col">
-      <div className="bg-white border-b p-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <button className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-800 rounded-md text-sm" type="button">
-            <Play className="h-4 w-4" />
-            Run Code
-          </button>
-          <button className="flex items-center gap-2 px-3 py-1 bg-gray-100 text-gray-700 rounded-md text-sm" type="button">
-            <AlertCircle className="h-4 w-4" />
-            Debug Mode
-          </button>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-600">Time: 23:45</span>
-          <button onClick={onComplete} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" type="button">
-            Complete Challenge
-          </button>
+      <div className="bg-white border-b p-4">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center gap-3">
+            <img src={logo} alt="SimuWork logo" className="h-10 w-auto rounded-md shadow-sm" />
+            <div className="leading-tight">
+              <p className="text-sm font-semibold text-gray-900">SimuWork Simulator</p>
+              <p className="text-xs text-gray-500">{stack ? `${stack.name} track` : 'API integration training'}</p>
+            </div>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-6 lg:gap-8 lg:flex-1">
+            <div className="flex items-center gap-3">
+              <button className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-800 rounded-md text-sm" type="button">
+                <Play className="h-4 w-4" />
+                Run Code
+              </button>
+              <button className="flex items-center gap-2 px-3 py-1 bg-gray-100 text-gray-700 rounded-md text-sm" type="button">
+                <AlertCircle className="h-4 w-4" />
+                Debug Mode
+              </button>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-gray-600">Time: 23:45</span>
+              <button onClick={onComplete} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" type="button">
+                Complete Challenge
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 

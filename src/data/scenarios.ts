@@ -21,5 +21,19 @@ export const scenarios: Scenario[] = [
     difficulty: 'Intermediate',
     estimatedTime: '90 minutes',
     skills: ['Security', 'JWT', 'User Management']
+  },
+  {
+    title: 'Infrastructure Drift',
+    description: "Production doesn't match your Terraform state - identify and resolve the differences",
+    difficulty: 'Advanced',
+    estimatedTime: '75 minutes',
+    skills: ['Terraform', 'Infrastructure as Code', 'Monitoring']
+  },
+  {
+    title: 'Container Issues',
+    description: 'Pods are failing to start in the Kubernetes cluster - debug the deployment manifests',
+    difficulty: 'Intermediate',
+    estimatedTime: '50 minutes',
+    skills: ['Kubernetes', 'YAML', 'Observability']
   }
 ];
