@@ -29,6 +29,4 @@ src/
 
 Tailwind configuration lives in `tailwind.config.ts`, while PostCSS is configured via `postcss.config.js`.
 
-## Naming
 
-The application is titled **SimuWork** across the HTML, package manifest, and primary dashboard view for consistency.

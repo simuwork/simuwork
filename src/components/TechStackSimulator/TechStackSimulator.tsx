@@ -74,10 +74,10 @@ const DashboardView = ({ onStart }: DashboardViewProps) => (
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard icon={<Target className="h-8 w-8 text-blue-500" />} label="Active Simulations" value="2,847" />
-        <StatCard icon={<Users className="h-8 w-8 text-green-500" />} label="Companies Mapped" value="156" />
-        <StatCard icon={<CheckCircle className="h-8 w-8 text-purple-500" />} label="Success Rate" value="87%" />
-        <StatCard icon={<Zap className="h-8 w-8 text-orange-500" />} label="Avg. Time to Hire" value="-40%" />
+        <StatCard icon={<CheckCircle className="h-8 w-8 text-blue-500" />} label="Scenarios Completed" value="12/45" />
+        <StatCard icon={<Zap className="h-8 w-8 text-orange-500" />} label="Current Streak" value="7 days" />
+        <StatCard icon={<Target className="h-8 w-8 text-green-500" />} label="Practice Hours" value="23.5 hrs" />
+        <StatCard icon={<Users className="h-8 w-8 text-purple-500" />} label="This Week's Progress" value="5 scenarios" />
       </div>
 
       <section className="bg-white rounded-lg shadow-sm border p-6 mb-8">
@@ -90,11 +90,10 @@ const DashboardView = ({ onStart }: DashboardViewProps) => (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {techStacks.map((stack) => (
             <article key={stack.id} className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <div className={`w-4 h-4 rounded ${stack.color}`} aria-hidden="true" />
-                <span className="text-sm font-medium text-gray-500">{stack.jobs} jobs</span>
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">{stack.name}</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+                <span className={`w-3 h-3 rounded-full ${stack.color}`} aria-hidden="true" />
+                {stack.name}
+              </h3>
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm text-gray-600">Market Demand</span>

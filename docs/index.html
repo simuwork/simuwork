@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SimuWork – POC Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: #f9fafb;
+        color: #111827;
+      }
+      .poc-disabled {
+        cursor: not-allowed !important;
+        opacity: 0.7 !important;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen">
+    <div class="bg-gray-50 p-4 sm:p-6">
+      <div class="max-w-7xl mx-auto">
+        <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:gap-6">
+          <img src="logo.png" alt="SimuWork logo" class="w-20 sm:w-28 md:w-32 h-auto mb-4 sm:mb-0 rounded-lg shadow-sm" />
+          <div>
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">SimuWork</h1>
+            <p class="text-xl text-gray-600">Practice real company workflows with AI-powered environments</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <article class="bg-white p-6 rounded-lg shadow-sm border">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600">Scenarios Completed</p>
+                <p class="text-2xl font-bold text-gray-900">12/45</p>
+              </div>
+              <svg class="h-8 w-8 text-blue-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 2.25 2.25L15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+            </div>
+          </article>
+          <article class="bg-white p-6 rounded-lg shadow-sm border">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600">Current Streak</p>
+                <p class="text-2xl font-bold text-gray-900">7 days</p>
+              </div>
+              <svg class="h-8 w-8 text-orange-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z" /></svg>
+            </div>
+          </article>
+          <article class="bg-white p-6 rounded-lg shadow-sm border">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600">Practice Hours</p>
+                <p class="text-2xl font-bold text-gray-900">23.5 hrs</p>
+              </div>
+              <svg class="h-8 w-8 text-green-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7Z" /></svg>
+            </div>
+          </article>
+          <article class="bg-white p-6 rounded-lg shadow-sm border">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600">This Week's Progress</p>
+                <p class="text-2xl font-bold text-gray-900">5 scenarios</p>
+              </div>
+              <svg class="h-8 w-8 text-purple-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11h2.403a.6.6 0 0 0 .436-1.013l-9.403-9.4a.6.6 0 0 0-1.01.013L8.975 5.228M5 8H3.6a.6.6 0 0 0-.6.6V20a1 1 0 0 0 1 1h14.4a.6.6 0 0 0 .6-.6V12" /></svg>
+            </div>
+          </article>
+        </div>
+
+        <section class="bg-white rounded-lg shadow-sm border p-6 mb-8">
+          <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900">Choose Your Target Tech Stack</h2>
+              <p class="text-sm text-gray-600">Match SimuWork to the companies you want to impress.</p>
+            </div>
+          </header>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <article class="border rounded-lg p-6 hover:shadow-md transition-shadow">
+              <h3 class="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-blue-500" aria-hidden="true"></span>
+                Frontend Accelerator
+              </h3>
+              <div class="mb-4">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm text-gray-600">Market Demand</span>
+                  <span class="text-sm font-medium">82%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div class="bg-blue-500 h-2 rounded-full" style="width:82%"></div>
+                </div>
+              </div>
+              <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-2">Top Companies:</p>
+                <div class="flex flex-wrap gap-1">
+                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">Notion</span>
+                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">Linear</span>
+                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">Figma</span>
+                </div>
+              </div>
+              <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg poc-disabled" type="button" data-poc>
+                Start Simulation
+              </button>
+            </article>
+            <article class="border rounded-lg p-6 hover:shadow-md transition-shadow">
+              <h3 class="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-emerald-500" aria-hidden="true"></span>
+                Backend Systems
+              </h3>
+              <div class="mb-4">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm text-gray-600">Market Demand</span>
+                  <span class="text-sm font-medium">74%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div class="bg-emerald-500 h-2 rounded-full" style="width:74%"></div>
+                </div>
+              </div>
+              <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-2">Top Companies:</p>
+                <div class="flex flex-wrap gap-1">
+                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">Stripe</span>
+                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">Shopify</span>
+                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">Mercury</span>
+                </div>
+              </div>
+              <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg poc-disabled" type="button" data-poc>
+                Start Simulation
+              </button>
+            </article>
+            <article class="border rounded-lg p-6 hover:shadow-md transition-shadow">
+              <h3 class="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-purple-500" aria-hidden="true"></span>
+                Cloud DevOps
+              </h3>
+              <div class="mb-4">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm text-gray-600">Market Demand</span>
+                  <span class="text-sm font-medium">68%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div class="bg-purple-500 h-2 rounded-full" style="width:68%"></div>
+                </div>
+              </div>
+              <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-2">Top Companies:</p>
+                <div class="flex flex-wrap gap-1">
+                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">Datadog</span>
+                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">Cloudflare</span>
+                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">HashiCorp</span>
+                </div>
+              </div>
+              <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg poc-disabled" type="button" data-poc>
+                Start Simulation
+              </button>
+            </article>
+          </div>
+        </section>
+
+        <section class="bg-white rounded-lg shadow-sm border p-6 mb-8">
+          <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900">Popular Training Scenarios</h2>
+              <p class="text-sm text-gray-600">Preview the kinds of challenges SimuWork can throw at you.</p>
+            </div>
+            <svg class="h-6 w-6 text-blue-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z" /></svg>
+          </header>
+          <div class="space-y-4">
+            <article class="border rounded-lg p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <h3 class="text-lg font-semibold text-gray-900">API Integration Challenge</h3>
+                  <span class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-800">Intermediate</span>
+                  <span class="text-sm text-gray-500">~45 minutes</span>
+                </div>
+                <p class="text-gray-600 mb-2">Connect payment processing to user dashboard</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">REST APIs</span>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Error Handling</span>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">State Management</span>
+                </div>
+              </div>
+              <button class="w-full md:w-auto md:ml-4 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg poc-disabled" type="button" data-poc>
+                View Details
+              </button>
+            </article>
+            <article class="border rounded-lg p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <h3 class="text-lg font-semibold text-gray-900">Database Performance Bug</h3>
+                  <span class="px-2 py-1 text-xs rounded bg-red-100 text-red-800">Advanced</span>
+                  <span class="text-sm text-gray-500">~60 minutes</span>
+                </div>
+                <p class="text-gray-600 mb-2">Optimize slow query affecting user login</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">SQL Optimization</span>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Debugging</span>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Performance Analysis</span>
+                </div>
+              </div>
+              <button class="w-full md:w-auto md:ml-4 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg poc-disabled" type="button" data-poc>
+                View Details
+              </button>
+            </article>
+            <article class="border rounded-lg p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <h3 class="text-lg font-semibold text-gray-900">Authentication Implementation</h3>
+                  <span class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-800">Intermediate</span>
+                  <span class="text-sm text-gray-500">~90 minutes</span>
+                </div>
+                <p class="text-gray-600 mb-2">Add JWT authentication to existing app</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Security</span>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">JWT</span>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">User Management</span>
+                </div>
+              </div>
+              <button class="w-full md:w-auto md:ml-4 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg poc-disabled" type="button" data-poc>
+                View Details
+              </button>
+            </article>
+            <article class="border rounded-lg p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <h3 class="text-lg font-semibold text-gray-900">Infrastructure Drift</h3>
+                  <span class="px-2 py-1 text-xs rounded bg-red-100 text-red-800">Advanced</span>
+                  <span class="text-sm text-gray-500">~75 minutes</span>
+                </div>
+                <p class="text-gray-600 mb-2">Production doesn't match your Terraform state - identify and resolve the differences</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Terraform</span>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Infrastructure as Code</span>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Monitoring</span>
+                </div>
+              </div>
+              <button class="w-full md:w-auto md:ml-4 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg poc-disabled" type="button" data-poc>
+                View Details
+              </button>
+            </article>
+            <article class="border rounded-lg p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <h3 class="text-lg font-semibold text-gray-900">Container Issues</h3>
+                  <span class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-800">Intermediate</span>
+                  <span class="text-sm text-gray-500">~50 minutes</span>
+                </div>
+                <p class="text-gray-600 mb-2">Pods are failing to start in the Kubernetes cluster - debug the deployment manifests</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Kubernetes</span>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">YAML</span>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Observability</span>
+                </div>
+              </div>
+              <button class="w-full md:w-auto md:ml-4 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg poc-disabled" type="button" data-poc>
+                View Details
+              </button>
+            </article>
+          </div>
+        </section>
+
+        <section class="bg-gray-900 rounded-lg p-6 text-white">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div class="flex items-start gap-4">
+              <img src="logo.png" alt="SimuWork logo" class="w-12 md:w-16 h-auto rounded-md bg-white/10 p-2" />
+              <div>
+                <h2 class="text-2xl font-bold mb-2">Try the SimuWork Simulator</h2>
+                <p class="text-gray-300">Spin up realistic, AI-powered environments to practice real-world engineering workflows.</p>
+              </div>
+            </div>
+            <div class="flex flex-col gap-4 w-full max-w-md">
+              <button id="schedule-demo-toggle" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg" type="button">
+                Schedule Demo
+              </button>
+              <form id="demo-form" class="hidden bg-white/10 backdrop-blur p-4 rounded-lg space-y-4">
+                <div>
+                  <label class="text-sm font-medium text-white" for="demo-name">Full Name</label>
+                  <input id="demo-name" name="name" type="text" required class="mt-1 w-full rounded-md border border-white/20 bg-white/20 px-3 py-2 text-white placeholder-white/60" placeholder="Jane Doe" />
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-white" for="demo-email">Work Email</label>
+                  <input id="demo-email" name="email" type="email" required class="mt-1 w-full rounded-md border border-white/20 bg-white/20 px-3 py-2 text-white placeholder-white/60" placeholder="jane@company.com" />
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="text-sm font-medium text-white" for="demo-company">Company</label>
+                    <input id="demo-company" name="company" type="text" class="mt-1 w-full rounded-md border border-white/20 bg-white/20 px-3 py-2 text-white placeholder-white/60" placeholder="Acme Corp" />
+                  </div>
+                  <div>
+                    <label class="text-sm font-medium text-white" for="demo-role">Role</label>
+                    <input id="demo-role" name="role" type="text" class="mt-1 w-full rounded-md border border-white/20 bg-white/20 px-3 py-2 text-white placeholder-white/60" placeholder="Engineering Manager" />
+                  </div>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-white" for="demo-notes">Notes</label>
+                  <textarea id="demo-notes" name="notes" rows="3" class="mt-1 w-full rounded-md border border-white/20 bg-white/20 px-3 py-2 text-white placeholder-white/60" placeholder="Share what you want to practice"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">Submit Interest</button>
+              </form>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const pocElements = document.querySelectorAll('[data-poc]');
+      pocElements.forEach((el) => {
+        el.addEventListener('click', (event) => {
+          event.preventDefault();
+          alert('This is a proof-of-concept preview. Actions are disabled in this static demo.');
+        });
+      });
+
+      const toggleButton = document.getElementById('schedule-demo-toggle');
+      const demoForm = document.getElementById('demo-form');
+
+      toggleButton?.addEventListener('click', () => {
+        demoForm?.classList.toggle('hidden');
+      });
+
+      demoForm?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        alert('Thanks for your interest! This is a static proof-of-concept, so submissions are not sent.');
+      });
+    </script>
+  </body>
+</html>
