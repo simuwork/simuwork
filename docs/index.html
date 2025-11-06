@@ -8,293 +8,468 @@
     <style>
       body {
         font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        background: #f9fafb;
-        color: #111827;
+        background: linear-gradient(110deg, #ffffff 0%, #eef5ff 32%, #1d4dab 78%, #07132f 100%);
+        color: #e2e8f0;
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+      }
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20400%20400%27%3E%0A%20%20%3Crect%20width%3D%27400%27%20height%3D%27400%27%20fill%3D%27none%27/%3E%0A%20%20%3Cg%20stroke%3D%27%238ec5ff%27%20stroke-width%3D%271.4%27%20stroke-opacity%3D%270.4%27%20fill%3D%27none%27%3E%0A%20%20%20%20%3Cpath%20d%3D%27M40%20280h80v-80h80v-80h80%27/%3E%0A%20%20%20%20%3Cpath%20d%3D%27M120%20360v-60h60v-60h60v-60h60%27/%3E%0A%20%20%20%20%3Cpath%20d%3D%27M200%2040v80h-60v60h-60v80h-40%27/%3E%0A%20%20%20%20%3Cpath%20d%3D%27M320%20120h-60v60h-60v80h-80v60%27/%3E%0A%20%20%3C/g%3E%0A%20%20%3Cg%20fill%3D%27%238ec5ff%27%20fill-opacity%3D%270.45%27%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2740%27%20cy%3D%27280%27%20r%3D%274%27/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%27120%27%20cy%3D%27200%27%20r%3D%274%27/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%27200%27%20cy%3D%27120%27%20r%3D%274%27/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%27280%27%20cy%3D%27120%27%20r%3D%274%27/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%27180%27%20cy%3D%27240%27%20r%3D%274%27/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%27260%27%20cy%3D%27240%27%20r%3D%274%27/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%27120%27%20cy%3D%27360%27%20r%3D%274%27/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2760%27%20cy%3D%27240%27%20r%3D%274%27/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%27200%27%20cy%3D%2740%27%20r%3D%274%27/%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E");
+        background-repeat: repeat;
+        background-size: 420px 420px;
+        background-position: right top;
+        opacity: 0.38;
+        pointer-events: none;
+        z-index: -2;
+        mix-blend-mode: screen;
+      }
+      body::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(110deg, rgba(255, 255, 255, 0) 0%, rgba(33, 110, 220, 0.28) 48%, rgba(7, 19, 47, 0.82) 100%);
+        pointer-events: none;
+        z-index: -3;
+      }
+      .scene {
+        position: relative;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+      }
+      .scene::before,
+      .scene::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(120px);
+        opacity: 0.35;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .scene::before {
+        top: -180px;
+        left: -160px;
+        width: 360px;
+        height: 360px;
+        background: rgba(90, 175, 255, 0.48);
+      }
+      .scene::after {
+        right: -180px;
+        bottom: -160px;
+        width: 420px;
+        height: 420px;
+        background: rgba(26, 91, 206, 0.38);
+      }
+      .glass-panel {
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(135deg, rgba(18, 45, 96, 0.82), rgba(8, 21, 53, 0.88));
+        border: 1px solid rgba(112, 186, 255, 0.28);
+        border-radius: 28px;
+        box-shadow: 0 40px 90px rgba(4, 16, 46, 0.55);
+        backdrop-filter: blur(22px);
+      }
+      .glass-card {
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(145deg, rgba(12, 34, 73, 0.78), rgba(6, 20, 48, 0.82));
+        border: 1px solid rgba(120, 192, 255, 0.22);
+        border-radius: 20px;
+        box-shadow: 0 28px 58px rgba(3, 12, 33, 0.45);
+        backdrop-filter: blur(18px);
+        transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .glass-card:hover {
+        border-color: rgba(148, 206, 255, 0.4);
+        transform: translateY(-4px);
+        box-shadow: 0 36px 76px rgba(4, 18, 46, 0.6);
+      }
+      .sub-card {
+        background: rgba(9, 25, 55, 0.72);
+        border: 1px solid rgba(132, 198, 255, 0.24);
+        border-radius: 18px;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+        transition: border-color 0.25s ease, transform 0.25s ease;
+      }
+      .sub-card:hover {
+        border-color: rgba(156, 214, 255, 0.45);
+        transform: translateY(-3px);
+      }
+      .primary-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(120deg, #3ab8ff 0%, #1c5aff 100%);
+        color: #f8fafc;
+        border: 1px solid rgba(136, 200, 255, 0.45);
+        box-shadow: 0 16px 36px rgba(24, 82, 166, 0.45);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .primary-button:hover {
+        transform: translateY(-1px) scale(1.01);
+        box-shadow: 0 18px 44px rgba(24, 82, 166, 0.55);
+      }
+      .button-ghost {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.08);
+        color: #dce9ff;
+        border: 1px solid rgba(148, 197, 255, 0.32);
+        transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+      }
+      .button-ghost:hover {
+        background: rgba(255, 255, 255, 0.16);
+        border-color: rgba(164, 210, 255, 0.45);
+        transform: translateY(-1px);
+      }
+      .accent-dot {
+        background: linear-gradient(135deg, #78d3ff, #1f6cff);
+        box-shadow: 0 0 14px rgba(100, 175, 255, 0.75);
+      }
+      .progress-track {
+        background: rgba(146, 198, 255, 0.14);
+      }
+      .progress-fill {
+        background: linear-gradient(90deg, #53c8ff 0%, #1b5fff 100%);
+      }
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.35rem 0.75rem;
+        border-radius: 9999px;
+        background: rgba(96, 188, 255, 0.16);
+        border: 1px solid rgba(140, 200, 255, 0.36);
+        color: #d7ecff;
+        font-size: 0.75rem;
+        letter-spacing: 0.02em;
       }
       .poc-disabled {
         cursor: not-allowed !important;
-        opacity: 0.7 !important;
+        opacity: 0.75 !important;
       }
     </style>
   </head>
-  <body class="min-h-screen">
-    <div class="bg-gray-50 p-4 sm:p-6">
-      <div class="max-w-7xl mx-auto">
-        <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:gap-6">
-          <img src="logo.png" alt="SimuWork logo" class="w-20 sm:w-28 md:w-32 h-auto mb-4 sm:mb-0 rounded-lg shadow-sm" />
-          <div>
-            <h1 class="text-4xl font-bold text-gray-900 mb-2">SimuWork</h1>
-            <p class="text-xl text-gray-600">Practice real company workflows with AI-powered environments</p>
+  <body class="min-h-screen text-slate-100 antialiased">
+    <div class="scene px-4 sm:px-6 lg:px-10">
+      <div class="max-w-7xl mx-auto space-y-10 sm:space-y-12">
+        <header class="glass-panel p-8 sm:p-12">
+          <div class="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+            <div class="flex items-start gap-6">
+              <img src="logo.png" alt="SimuWork logo" class="w-20 sm:w-28 md:w-32 h-auto rounded-2xl border border-white/10 bg-white/10 p-3 shadow-lg" />
+              <div class="space-y-4">
+                <span class="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.28em] uppercase text-sky-100/80">
+                  <span class="accent-dot h-2 w-2 rounded-full"></span>
+                  Simulated Mastery
+                </span>
+                <h1 class="text-4xl sm:text-5xl font-semibold text-white leading-tight">SimuWork</h1>
+                <p class="max-w-xl text-base sm:text-lg text-slate-300">Practice real company workflows with AI-powered environments tailored to the teams you want to join.</p>
+                <div class="flex flex-wrap gap-3">
+                  <button class="primary-button px-6 py-2.5 rounded-xl text-sm font-semibold uppercase tracking-wide poc-disabled" type="button" data-poc>
+                    Explore Scenarios
+                  </button>
+                  <button class="button-ghost px-6 py-2.5 rounded-xl text-sm font-semibold uppercase tracking-wide poc-disabled" type="button" data-poc>
+                    View Roadmap
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="w-full max-w-xs lg:max-w-sm">
+              <div class="rounded-2xl border border-white/10 bg-white/10 p-6 text-sm text-slate-200 shadow-lg">
+                <p class="text-base font-semibold text-slate-100 mb-3">Why teams love SimuWork</p>
+                <ul class="space-y-2 text-sm text-slate-300">
+                  <li class="flex items-start gap-2">
+                    <span class="mt-1 h-1.5 w-1.5 rounded-full accent-dot"></span>
+                    <span>Hands-on scenarios that mirror production-grade incidents.</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="mt-1 h-1.5 w-1.5 rounded-full accent-dot"></span>
+                    <span>Guided by AI coaches tuned to your stack and seniority.</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="mt-1 h-1.5 w-1.5 rounded-full accent-dot"></span>
+                    <span>Progress analytics that show recruiters what you can do.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
+        </header>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <article class="glass-card p-6 sm:p-7">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs font-medium uppercase tracking-wider text-slate-300/80">Scenarios Completed</p>
+                <p class="mt-2 text-3xl font-semibold text-white">12/45</p>
+              </div>
+              <svg class="h-10 w-10 text-sky-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 2.25 2.25L15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+            </div>
+          </article>
+          <article class="glass-card p-6 sm:p-7">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs font-medium uppercase tracking-wider text-slate-300/80">Current Streak</p>
+                <p class="mt-2 text-3xl font-semibold text-white">7 days</p>
+              </div>
+              <svg class="h-10 w-10 text-sky-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z" /></svg>
+            </div>
+          </article>
+          <article class="glass-card p-6 sm:p-7">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs font-medium uppercase tracking-wider text-slate-300/80">Practice Hours</p>
+                <p class="mt-2 text-3xl font-semibold text-white">23.5 hrs</p>
+              </div>
+              <svg class="h-10 w-10 text-sky-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7Z" /></svg>
+            </div>
+          </article>
+          <article class="glass-card p-6 sm:p-7">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs font-medium uppercase tracking-wider text-slate-300/80">This Week's Progress</p>
+                <p class="mt-2 text-3xl font-semibold text-white">5 scenarios</p>
+              </div>
+              <svg class="h-10 w-10 text-sky-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11h2.403a.6.6 0 0 0 .436-1.013l-9.403-9.4a.6.6 0 0 0-1.01.013L8.975 5.228M5 8H3.6a.6.6 0 0 0-.6.6V20a1 1 0 0 0 1 1h14.4a.6.6 0 0 0 .6-.6V12" /></svg>
+            </div>
+          </article>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <article class="bg-white p-6 rounded-lg shadow-sm border">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-gray-600">Scenarios Completed</p>
-                <p class="text-2xl font-bold text-gray-900">12/45</p>
-              </div>
-              <svg class="h-8 w-8 text-blue-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 2.25 2.25L15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-            </div>
-          </article>
-          <article class="bg-white p-6 rounded-lg shadow-sm border">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-gray-600">Current Streak</p>
-                <p class="text-2xl font-bold text-gray-900">7 days</p>
-              </div>
-              <svg class="h-8 w-8 text-orange-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z" /></svg>
-            </div>
-          </article>
-          <article class="bg-white p-6 rounded-lg shadow-sm border">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-gray-600">Practice Hours</p>
-                <p class="text-2xl font-bold text-gray-900">23.5 hrs</p>
-              </div>
-              <svg class="h-8 w-8 text-green-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7Z" /></svg>
-            </div>
-          </article>
-          <article class="bg-white p-6 rounded-lg shadow-sm border">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-gray-600">This Week's Progress</p>
-                <p class="text-2xl font-bold text-gray-900">5 scenarios</p>
-              </div>
-              <svg class="h-8 w-8 text-purple-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11h2.403a.6.6 0 0 0 .436-1.013l-9.403-9.4a.6.6 0 0 0-1.01.013L8.975 5.228M5 8H3.6a.6.6 0 0 0-.6.6V20a1 1 0 0 0 1 1h14.4a.6.6 0 0 0 .6-.6V12" /></svg>
-            </div>
-          </article>
-        </div>
-
-        <section class="bg-white rounded-lg shadow-sm border p-6 mb-8">
-          <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+        <section class="glass-card p-6 sm:p-8 space-y-6">
+          <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 class="text-2xl font-bold text-gray-900">Choose Your Target Tech Stack</h2>
-              <p class="text-sm text-gray-600">Match SimuWork to the companies you want to impress.</p>
+              <h2 class="text-2xl font-semibold text-white">Choose Your Target Tech Stack</h2>
+              <p class="text-sm text-slate-300">Match SimuWork to the companies you want to impress.</p>
             </div>
+            <span class="text-xs font-semibold uppercase tracking-[0.35em] text-sky-200/70">Adaptive Playlists</span>
           </header>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <article class="border rounded-lg p-6 hover:shadow-md transition-shadow">
-              <h3 class="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-blue-500" aria-hidden="true"></span>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <article class="sub-card p-6 flex flex-col gap-5">
+              <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                <span class="accent-dot h-3 w-3 rounded-full"></span>
                 Frontend Accelerator
               </h3>
-              <div class="mb-4">
-                <div class="flex items-center justify-between mb-1">
-                  <span class="text-sm text-gray-600">Market Demand</span>
-                  <span class="text-sm font-medium">82%</span>
+              <div>
+                <div class="flex items-center justify-between text-xs uppercase tracking-wide text-slate-300">
+                  <span>Market Demand</span>
+                  <span class="text-sm font-semibold text-slate-100">82%</span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                  <div class="bg-blue-500 h-2 rounded-full" style="width:82%"></div>
-                </div>
-              </div>
-              <div class="mb-4">
-                <p class="text-sm text-gray-600 mb-2">Top Companies:</p>
-                <div class="flex flex-wrap gap-1">
-                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">Notion</span>
-                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">Linear</span>
-                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">Figma</span>
+                <div class="progress-track w-full h-2 rounded-full mt-2">
+                  <div class="progress-fill h-2 rounded-full" style="width:82%"></div>
                 </div>
               </div>
-              <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg poc-disabled" type="button" data-poc>
+              <div>
+                <p class="text-sm text-slate-300 mb-2">Top Companies:</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="tag">Stripe</span>
+                  <span class="tag">Brex</span>
+                  <span class="tag">Linear</span>
+                </div>
+              </div>
+              <button class="primary-button px-4 py-2.5 rounded-lg text-sm font-semibold uppercase tracking-wide poc-disabled" type="button" data-poc>
                 Start Simulation
               </button>
             </article>
-            <article class="border rounded-lg p-6 hover:shadow-md transition-shadow">
-              <h3 class="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-emerald-500" aria-hidden="true"></span>
-                Backend Systems
+            <article class="sub-card p-6 flex flex-col gap-5">
+              <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                <span class="accent-dot h-3 w-3 rounded-full"></span>
+                Backend Architect
               </h3>
-              <div class="mb-4">
-                <div class="flex items-center justify-between mb-1">
-                  <span class="text-sm text-gray-600">Market Demand</span>
-                  <span class="text-sm font-medium">74%</span>
+              <div>
+                <div class="flex items-center justify-between text-xs uppercase tracking-wide text-slate-300">
+                  <span>Market Demand</span>
+                  <span class="text-sm font-semibold text-slate-100">91%</span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                  <div class="bg-emerald-500 h-2 rounded-full" style="width:74%"></div>
-                </div>
-              </div>
-              <div class="mb-4">
-                <p class="text-sm text-gray-600 mb-2">Top Companies:</p>
-                <div class="flex flex-wrap gap-1">
-                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">Stripe</span>
-                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">Shopify</span>
-                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">Mercury</span>
+                <div class="progress-track w-full h-2 rounded-full mt-2">
+                  <div class="progress-fill h-2 rounded-full" style="width:91%"></div>
                 </div>
               </div>
-              <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg poc-disabled" type="button" data-poc>
+              <div>
+                <p class="text-sm text-slate-300 mb-2">Top Companies:</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="tag">Netflix</span>
+                  <span class="tag">Shopify</span>
+                  <span class="tag">Mercado Libre</span>
+                </div>
+              </div>
+              <button class="primary-button px-4 py-2.5 rounded-lg text-sm font-semibold uppercase tracking-wide poc-disabled" type="button" data-poc>
                 Start Simulation
               </button>
             </article>
-            <article class="border rounded-lg p-6 hover:shadow-md transition-shadow">
-              <h3 class="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-purple-500" aria-hidden="true"></span>
+            <article class="sub-card p-6 flex flex-col gap-5">
+              <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                <span class="accent-dot h-3 w-3 rounded-full"></span>
                 Cloud DevOps
               </h3>
-              <div class="mb-4">
-                <div class="flex items-center justify-between mb-1">
-                  <span class="text-sm text-gray-600">Market Demand</span>
-                  <span class="text-sm font-medium">68%</span>
+              <div>
+                <div class="flex items-center justify-between text-xs uppercase tracking-wide text-slate-300">
+                  <span>Market Demand</span>
+                  <span class="text-sm font-semibold text-slate-100">68%</span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                  <div class="bg-purple-500 h-2 rounded-full" style="width:68%"></div>
-                </div>
-              </div>
-              <div class="mb-4">
-                <p class="text-sm text-gray-600 mb-2">Top Companies:</p>
-                <div class="flex flex-wrap gap-1">
-                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">Datadog</span>
-                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">Cloudflare</span>
-                  <span class="px-2 py-1 bg-gray-100 text-xs rounded">HashiCorp</span>
+                <div class="progress-track w-full h-2 rounded-full mt-2">
+                  <div class="progress-fill h-2 rounded-full" style="width:68%"></div>
                 </div>
               </div>
-              <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg poc-disabled" type="button" data-poc>
+              <div>
+                <p class="text-sm text-slate-300 mb-2">Top Companies:</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="tag">Datadog</span>
+                  <span class="tag">Cloudflare</span>
+                  <span class="tag">HashiCorp</span>
+                </div>
+              </div>
+              <button class="primary-button px-4 py-2.5 rounded-lg text-sm font-semibold uppercase tracking-wide poc-disabled" type="button" data-poc>
                 Start Simulation
               </button>
             </article>
           </div>
         </section>
 
-        <section class="bg-white rounded-lg shadow-sm border p-6 mb-8">
-          <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
+        <section class="glass-card p-6 sm:p-8 space-y-6">
+          <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 class="text-2xl font-bold text-gray-900">Popular Training Scenarios</h2>
-              <p class="text-sm text-gray-600">Preview the kinds of challenges SimuWork can throw at you.</p>
+              <h2 class="text-2xl font-semibold text-white">Popular Training Scenarios</h2>
+              <p class="text-sm text-slate-300">Preview the kinds of challenges SimuWork can throw at you.</p>
             </div>
-            <svg class="h-6 w-6 text-blue-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z" /></svg>
+            <svg class="h-6 w-6 text-sky-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z" /></svg>
           </header>
           <div class="space-y-4">
-            <article class="border rounded-lg p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <article class="sub-card p-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div class="flex-1">
-                <div class="flex items-center gap-3 mb-2">
-                  <h3 class="text-lg font-semibold text-gray-900">API Integration Challenge</h3>
-                  <span class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-800">Intermediate</span>
-                  <span class="text-sm text-gray-500">~45 minutes</span>
+                <div class="flex flex-wrap items-center gap-3 mb-2">
+                  <h3 class="text-lg font-semibold text-white">API Integration Challenge</h3>
+                  <span class="px-2 py-1 rounded-full text-xs font-medium uppercase tracking-wide bg-amber-400/10 text-amber-200 border border-amber-300/30">Intermediate</span>
+                  <span class="text-sm text-slate-400">~45 minutes</span>
                 </div>
-                <p class="text-gray-600 mb-2">Connect payment processing to user dashboard</p>
+                <p class="text-slate-300 mb-2">Connect payment processing to user dashboard</p>
                 <div class="flex flex-wrap gap-2">
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">REST APIs</span>
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Error Handling</span>
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">State Management</span>
+                  <span class="tag">REST APIs</span>
+                  <span class="tag">Error Handling</span>
+                  <span class="tag">State Management</span>
                 </div>
               </div>
-              <button class="w-full md:w-auto md:ml-4 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg poc-disabled" type="button" data-poc>
+              <button class="button-ghost px-4 py-2 rounded-lg text-sm font-semibold uppercase tracking-wide poc-disabled" type="button" data-poc>
                 View Details
               </button>
             </article>
-            <article class="border rounded-lg p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <article class="sub-card p-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div class="flex-1">
-                <div class="flex items-center gap-3 mb-2">
-                  <h3 class="text-lg font-semibold text-gray-900">Database Performance Bug</h3>
-                  <span class="px-2 py-1 text-xs rounded bg-red-100 text-red-800">Advanced</span>
-                  <span class="text-sm text-gray-500">~60 minutes</span>
+                <div class="flex flex-wrap items-center gap-3 mb-2">
+                  <h3 class="text-lg font-semibold text-white">Database Performance Bug</h3>
+                  <span class="px-2 py-1 rounded-full text-xs font-medium uppercase tracking-wide bg-rose-400/10 text-rose-200 border border-rose-300/30">Advanced</span>
+                  <span class="text-sm text-slate-400">~60 minutes</span>
                 </div>
-                <p class="text-gray-600 mb-2">Optimize slow query affecting user login</p>
+                <p class="text-slate-300 mb-2">Optimize slow query affecting user login</p>
                 <div class="flex flex-wrap gap-2">
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">SQL Optimization</span>
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Debugging</span>
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Performance Analysis</span>
+                  <span class="tag">SQL Optimization</span>
+                  <span class="tag">Debugging</span>
+                  <span class="tag">Performance Analysis</span>
                 </div>
               </div>
-              <button class="w-full md:w-auto md:ml-4 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg poc-disabled" type="button" data-poc>
+              <button class="button-ghost px-4 py-2 rounded-lg text-sm font-semibold uppercase tracking-wide poc-disabled" type="button" data-poc>
                 View Details
               </button>
             </article>
-            <article class="border rounded-lg p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <article class="sub-card p-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div class="flex-1">
-                <div class="flex items-center gap-3 mb-2">
-                  <h3 class="text-lg font-semibold text-gray-900">Authentication Implementation</h3>
-                  <span class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-800">Intermediate</span>
-                  <span class="text-sm text-gray-500">~90 minutes</span>
+                <div class="flex flex-wrap items-center gap-3 mb-2">
+                  <h3 class="text-lg font-semibold text-white">Authentication Implementation</h3>
+                  <span class="px-2 py-1 rounded-full text-xs font-medium uppercase tracking-wide bg-amber-400/10 text-amber-200 border border-amber-300/30">Intermediate</span>
+                  <span class="text-sm text-slate-400">~90 minutes</span>
                 </div>
-                <p class="text-gray-600 mb-2">Add JWT authentication to existing app</p>
+                <p class="text-slate-300 mb-2">Add JWT authentication to existing app</p>
                 <div class="flex flex-wrap gap-2">
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Security</span>
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">JWT</span>
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">User Management</span>
+                  <span class="tag">Security</span>
+                  <span class="tag">JWT</span>
+                  <span class="tag">User Management</span>
                 </div>
               </div>
-              <button class="w-full md:w-auto md:ml-4 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg poc-disabled" type="button" data-poc>
+              <button class="button-ghost px-4 py-2 rounded-lg text-sm font-semibold uppercase tracking-wide poc-disabled" type="button" data-poc>
                 View Details
               </button>
             </article>
-            <article class="border rounded-lg p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <article class="sub-card p-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div class="flex-1">
-                <div class="flex items-center gap-3 mb-2">
-                  <h3 class="text-lg font-semibold text-gray-900">Infrastructure Drift</h3>
-                  <span class="px-2 py-1 text-xs rounded bg-red-100 text-red-800">Advanced</span>
-                  <span class="text-sm text-gray-500">~75 minutes</span>
+                <div class="flex flex-wrap items-center gap-3 mb-2">
+                  <h3 class="text-lg font-semibold text-white">Infrastructure Drift</h3>
+                  <span class="px-2 py-1 rounded-full text-xs font-medium uppercase tracking-wide bg-rose-400/10 text-rose-200 border border-rose-300/30">Advanced</span>
+                  <span class="text-sm text-slate-400">~75 minutes</span>
                 </div>
-                <p class="text-gray-600 mb-2">Production doesn't match your Terraform state - identify and resolve the differences</p>
+                <p class="text-slate-300 mb-2">Production doesn't match your Terraform state - identify and resolve the differences</p>
                 <div class="flex flex-wrap gap-2">
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Terraform</span>
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Infrastructure as Code</span>
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Monitoring</span>
+                  <span class="tag">Terraform</span>
+                  <span class="tag">Infrastructure as Code</span>
+                  <span class="tag">Monitoring</span>
                 </div>
               </div>
-              <button class="w-full md:w-auto md:ml-4 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg poc-disabled" type="button" data-poc>
+              <button class="button-ghost px-4 py-2 rounded-lg text-sm font-semibold uppercase tracking-wide poc-disabled" type="button" data-poc>
                 View Details
               </button>
             </article>
-            <article class="border rounded-lg p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <article class="sub-card p-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div class="flex-1">
-                <div class="flex items-center gap-3 mb-2">
-                  <h3 class="text-lg font-semibold text-gray-900">Container Issues</h3>
-                  <span class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-800">Intermediate</span>
-                  <span class="text-sm text-gray-500">~50 minutes</span>
+                <div class="flex flex-wrap items-center gap-3 mb-2">
+                  <h3 class="text-lg font-semibold text-white">Container Issues</h3>
+                  <span class="px-2 py-1 rounded-full text-xs font-medium uppercase tracking-wide bg-amber-400/10 text-amber-200 border border-amber-300/30">Intermediate</span>
+                  <span class="text-sm text-slate-400">~50 minutes</span>
                 </div>
-                <p class="text-gray-600 mb-2">Pods are failing to start in the Kubernetes cluster - debug the deployment manifests</p>
+                <p class="text-slate-300 mb-2">Pods are failing to start in the Kubernetes cluster - debug the deployment manifests</p>
                 <div class="flex flex-wrap gap-2">
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Kubernetes</span>
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">YAML</span>
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Observability</span>
+                  <span class="tag">Kubernetes</span>
+                  <span class="tag">YAML</span>
+                  <span class="tag">Observability</span>
                 </div>
               </div>
-              <button class="w-full md:w-auto md:ml-4 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg poc-disabled" type="button" data-poc>
+              <button class="button-ghost px-4 py-2 rounded-lg text-sm font-semibold uppercase tracking-wide poc-disabled" type="button" data-poc>
                 View Details
               </button>
             </article>
           </div>
         </section>
 
-        <section class="bg-gray-900 rounded-lg p-6 text-white">
+        <section class="glass-panel p-6 sm:p-8">
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div class="flex items-start gap-4">
-              <img src="logo.png" alt="SimuWork logo" class="w-12 md:w-16 h-auto rounded-md bg-white/10 p-2" />
+              <img src="logo.png" alt="SimuWork logo" class="w-12 md:w-16 h-auto rounded-xl border border-white/15 bg-white/10 p-2" />
               <div>
-                <h2 class="text-2xl font-bold mb-2">Try the SimuWork Simulator</h2>
-                <p class="text-gray-300">Spin up realistic, AI-powered environments to practice real-world engineering workflows.</p>
+                <h2 class="text-2xl font-semibold text-white mb-2">Try the SimuWork Simulator</h2>
+                <p class="text-slate-300">Spin up realistic, AI-powered environments to practice real-world engineering workflows.</p>
               </div>
             </div>
             <div class="flex flex-col gap-4 w-full max-w-md">
-              <button id="schedule-demo-toggle" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg" type="button">
+              <button id="schedule-demo-toggle" class="button-ghost px-4 py-2.5 rounded-lg text-sm font-semibold uppercase tracking-wide" type="button">
                 Schedule Demo
               </button>
-              <form id="demo-form" class="hidden bg-white/10 backdrop-blur p-4 rounded-lg space-y-4">
+              <form id="demo-form" class="hidden sub-card p-4 rounded-xl space-y-4">
                 <div>
-                  <label class="text-sm font-medium text-white" for="demo-name">Full Name</label>
-                  <input id="demo-name" name="name" type="text" required class="mt-1 w-full rounded-md border border-white/20 bg-white/20 px-3 py-2 text-white placeholder-white/60" placeholder="Jane Doe" />
+                  <label class="text-sm font-medium text-slate-100" for="demo-name">Full Name</label>
+                  <input id="demo-name" name="name" type="text" required class="mt-1 w-full rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-white placeholder-white/60 focus:border-sky-300 focus:outline-none" placeholder="Jane Doe" />
                 </div>
                 <div>
-                  <label class="text-sm font-medium text-white" for="demo-email">Work Email</label>
-                  <input id="demo-email" name="email" type="email" required class="mt-1 w-full rounded-md border border-white/20 bg-white/20 px-3 py-2 text-white placeholder-white/60" placeholder="jane@company.com" />
+                  <label class="text-sm font-medium text-slate-100" for="demo-email">Work Email</label>
+                  <input id="demo-email" name="email" type="email" required class="mt-1 w-full rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-white placeholder-white/60 focus:border-sky-300 focus:outline-none" placeholder="jane@company.com" />
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label class="text-sm font-medium text-white" for="demo-company">Company</label>
-                    <input id="demo-company" name="company" type="text" class="mt-1 w-full rounded-md border border-white/20 bg-white/20 px-3 py-2 text-white placeholder-white/60" placeholder="Acme Corp" />
+                    <label class="text-sm font-medium text-slate-100" for="demo-company">Company</label>
+                    <input id="demo-company" name="company" type="text" class="mt-1 w-full rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-white placeholder-white/60 focus:border-sky-300 focus:outline-none" placeholder="Acme Corp" />
                   </div>
                   <div>
-                    <label class="text-sm font-medium text-white" for="demo-role">Role</label>
-                    <input id="demo-role" name="role" type="text" class="mt-1 w-full rounded-md border border-white/20 bg-white/20 px-3 py-2 text-white placeholder-white/60" placeholder="Engineering Manager" />
+                    <label class="text-sm font-medium text-slate-100" for="demo-role">Role</label>
+                    <input id="demo-role" name="role" type="text" class="mt-1 w-full rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-white placeholder-white/60 focus:border-sky-300 focus:outline-none" placeholder="Engineering Manager" />
                   </div>
                 </div>
                 <div>
-                  <label class="text-sm font-medium text-white" for="demo-notes">Notes</label>
-                  <textarea id="demo-notes" name="notes" rows="3" class="mt-1 w-full rounded-md border border-white/20 bg-white/20 px-3 py-2 text-white placeholder-white/60" placeholder="Share what you want to practice"></textarea>
+                  <label class="text-sm font-medium text-slate-100" for="demo-notes">Notes</label>
+                  <textarea id="demo-notes" name="notes" rows="3" class="mt-1 w-full rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-white placeholder-white/60 focus:border-sky-300 focus:outline-none" placeholder="Share what you want to practice"></textarea>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">Submit Interest</button>
+                <button type="submit" class="primary-button w-full px-4 py-2.5 rounded-lg text-sm font-semibold uppercase tracking-wide">
+                  Submit Interest
+                </button>
               </form>
             </div>
           </div>
