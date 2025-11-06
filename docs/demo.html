@@ -25,7 +25,6 @@
             overflow: hidden;
         }
 
-        /* Header */
         .app-header {
             display: flex;
             justify-content: space-between;
@@ -135,7 +134,6 @@
             animation: blink 2s infinite;
         }
 
-        /* Buttons */
         .btn-primary, .btn-secondary {
             padding: 10px 24px;
             border: none;
@@ -178,7 +176,6 @@
             padding: 12px 28px;
         }
 
-        /* Main Layout */
         .app-main {
             flex: 1;
             display: grid;
@@ -216,7 +213,6 @@
         .code-section { flex: 1; }
         .messages-section { flex: 1; }
 
-        /* Footer */
         .app-footer {
             padding: 12px 28px;
             background: rgba(255, 255, 255, 0.05);
@@ -231,7 +227,6 @@
             font-weight: 500;
         }
 
-        /* Loading Screen */
         .loading-screen {
             min-height: 100vh;
             display: flex;
@@ -264,7 +259,6 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
-        /* Completion Overlay */
         .completion-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -346,7 +340,6 @@
             background-clip: text;
         }
 
-        /* Section Headers */
         .section-header {
             padding: 16px 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -372,7 +365,6 @@
             border-radius: 12px;
         }
 
-        /* ObjectivesPanel */
         .objectives-container {
             display: flex;
             flex-direction: column;
@@ -499,7 +491,6 @@
             text-decoration: line-through;
         }
 
-        /* CodeEditor */
         .code-editor-container {
             display: flex;
             flex-direction: column;
@@ -603,7 +594,6 @@
             background: rgba(102, 126, 234, 0.3);
         }
 
-        /* TerminalOutput */
         .terminal-container {
             display: flex;
             flex-direction: column;
@@ -717,7 +707,6 @@
             animation: pulse 1.5s infinite;
         }
 
-        /* AgentMessages */
         .messages-container {
             display: flex;
             flex-direction: column;
@@ -833,7 +822,6 @@
             white-space: pre-wrap;
         }
 
-        /* AI Input Boxes */
         .ai-input-container {
             padding: 16px;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
@@ -926,7 +914,6 @@
             cursor: not-allowed;
         }
 
-        /* Code Assistant specific styling */
         .code-assistant-input .ai-input-wrapper:hover {
             border-color: rgba(147, 51, 234, 0.3);
             background: rgba(147, 51, 234, 0.08);
@@ -942,7 +929,6 @@
             background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%);
         }
 
-        /* Team Chat specific styling */
         .team-chat-input .ai-input-wrapper:hover {
             border-color: rgba(34, 197, 94, 0.3);
             background: rgba(34, 197, 94, 0.08);
@@ -968,7 +954,6 @@
             box-shadow: 0 0 8px #667eea;
         }
 
-        /* TooltipGuide */
         .tooltip-guide {
             position: fixed;
             z-index: 3000;
@@ -1032,7 +1017,6 @@
             line-height: 1.5;
         }
 
-        /* Responsive */
         @media (max-width: 1400px) {
             .app-main { grid-template-columns: 280px 1fr 360px; }
         }
@@ -1049,15 +1033,15 @@
     <div id="root">
         <div class="loading-screen">
             <div class="loading-spinner"></div>
-            <p>Initializing AI Agents...</p>
+            <p>Waking up our AI Agents...</p>
         </div>
     </div>
 
     <script>
-        // ========================
-        // EVENT BUS SYSTEM
-        // ========================
-        const EventTypes = {
+        const $ = id => document.getElementById(id);
+        const qs = sel => document.querySelector(sel);
+
+        const ET = {
             USER_CODE_CHANGE: 'user_code_change',
             USER_RUN_TESTS: 'user_run_tests',
             USER_ASK_QUESTION: 'user_ask_question',
@@ -1091,7 +1075,7 @@
             NARRATION_HIDDEN: 'narration_hidden',
         };
 
-        class EventBus {
+        class Bus {
             constructor() {
                 this.subscriptions = {};
                 this.eventHistory = [];
@@ -1164,12 +1148,9 @@
             }
         }
 
-        const eventBus = new EventBus();
+        const bus = new Bus();
 
-        // ========================
-        // WORLD STATE SYSTEM
-        // ========================
-        class WorldState {
+        class State {
             constructor() {
                 this.state = this.getInitialState();
                 this.listeners = [];
@@ -1331,7 +1312,7 @@
                     scenario: { objectives },
                 });
 
-                eventBus.publish(EventTypes.SCENARIO_OBJECTIVE_COMPLETE, {
+                bus.publish(ET.SCENARIO_OBJECTIVE_COMPLETE, {
                     objectiveId,
                     allComplete: objectives.every(obj => obj.completed),
                 });
@@ -1346,7 +1327,7 @@
                     scenario: { phase },
                 });
 
-                eventBus.publish(EventTypes.SCENARIO_PHASE_CHANGE, { phase });
+                bus.publish(ET.SCENARIO_PHASE_CHANGE, { phase });
             }
 
             updateAgent(agentId, updates) {
@@ -1397,12 +1378,9 @@
             }
         }
 
-        const worldState = new WorldState();
+        const ws = new State();
 
-        // ========================
-        // GUIDE CONTROLLER
-        // ========================
-        class GuideController {
+        class Guide {
             constructor() {
                 this.currentNarration = null;
                 this.hideTimer = null;
@@ -1417,7 +1395,7 @@
                 this.currentNarration = narration;
                 this.notifySubscribers();
 
-                eventBus.publish(EventTypes.NARRATION_SHOWN, { narration });
+                bus.publish(ET.NARRATION_SHOWN, { narration });
 
                 const duration = narration.duration || 6000;
                 this.hideTimer = setTimeout(() => {
@@ -1434,7 +1412,7 @@
                 this.currentNarration = null;
                 this.notifySubscribers();
 
-                eventBus.publish(EventTypes.NARRATION_HIDDEN);
+                bus.publish(ET.NARRATION_HIDDEN);
             }
 
             getCurrentNarration() {
@@ -1468,12 +1446,9 @@
             }
         }
 
-        const guideController = new GuideController();
+        const guide = new Guide();
 
-        // ========================
-        // BASE AGENT CLASS
-        // ========================
-        class BaseAgent {
+        class Agent {
             constructor(config) {
                 this.id = config.id;
                 this.role = config.role;
@@ -1491,7 +1466,7 @@
 
             subscribeToEvents(eventTypes) {
                 eventTypes.forEach(eventType => {
-                    const unsubscribe = eventBus.subscribe(
+                    const unsubscribe = bus.subscribe(
                         eventType,
                         (event) => this.handleEvent(event),
                         this.id
@@ -1520,12 +1495,12 @@
             }
 
             react(event) {
-                // Override in subclasses
+
             }
 
             sendMessage(content, metadata = {}) {
                 setTimeout(() => {
-                    worldState.addMessage({
+                    ws.addMessage({
                         agentId: this.id,
                         agentRole: this.role,
                         content: this.generateResponse(content, metadata),
@@ -1545,7 +1520,7 @@
                     severity,
                 });
 
-                eventBus.publish(EventTypes.AGENT_HINT, {
+                bus.publish(ET.AGENT_HINT, {
                     agentId: this.id,
                     hint,
                     severity,
@@ -1558,7 +1533,7 @@
                     ...context,
                 });
 
-                eventBus.publish(EventTypes.AGENT_QUESTION, {
+                bus.publish(ET.AGENT_QUESTION, {
                     agentId: this.id,
                     question,
                     context,
@@ -1570,7 +1545,7 @@
                     type: 'code_review',
                 });
 
-                eventBus.publish(EventTypes.AGENT_CODE_REVIEW, {
+                bus.publish(ET.AGENT_CODE_REVIEW, {
                     agentId: this.id,
                     code,
                     feedback,
@@ -1582,11 +1557,11 @@
             }
 
             observeState() {
-                return worldState.getState();
+                return ws.getState();
             }
 
             updateAgentState(updates) {
-                worldState.updateAgent(this.id, updates);
+                ws.updateAgent(this.id, updates);
             }
 
             getMetrics() {
@@ -1603,11 +1578,7 @@
             }
         }
 
-        // ========================
-        // AGENT IMPLEMENTATIONS
-        // ========================
-
-        class SeniorDevAgent extends BaseAgent {
+        class Senior extends Agent {
             constructor() {
                 super({
                     id: 'senior_dev',
@@ -1618,10 +1589,10 @@
 
                 this.testFailureCount = 0;
                 this.subscribeToEvents([
-                    EventTypes.USER_CODE_CHANGE,
-                    EventTypes.USER_ASK_QUESTION,
-                    EventTypes.TESTS_FAILED,
-                    EventTypes.SCENARIO_PHASE_CHANGE,
+                    ET.USER_CODE_CHANGE,
+                    ET.USER_ASK_QUESTION,
+                    ET.TESTS_FAILED,
+                    ET.SCENARIO_PHASE_CHANGE,
                     'director_trigger_agent',
                 ]);
             }
@@ -1630,26 +1601,26 @@
                 if (event.type === 'director_trigger_agent' && event.payload.agentId === this.id) {
                     return true;
                 }
-                if (event.type === EventTypes.USER_CODE_CHANGE) {
+                if (event.type === ET.USER_CODE_CHANGE) {
                     const code = event.payload.code;
                     const issues = this.analyzeCode(code);
                     return issues.length > 0;
                 }
-                return event.type === EventTypes.USER_ASK_QUESTION ||
-                       event.type === EventTypes.TESTS_FAILED ||
-                       event.type === EventTypes.SCENARIO_PHASE_CHANGE;
+                return event.type === ET.USER_ASK_QUESTION ||
+                       event.type === ET.TESTS_FAILED ||
+                       event.type === ET.SCENARIO_PHASE_CHANGE;
             }
 
             react(event) {
                 if (event.type === 'director_trigger_agent') {
                     this.handleDirectorTrigger(event.payload);
-                } else if (event.type === EventTypes.USER_CODE_CHANGE) {
+                } else if (event.type === ET.USER_CODE_CHANGE) {
                     this.onCodeChange(event.payload);
-                } else if (event.type === EventTypes.USER_ASK_QUESTION) {
+                } else if (event.type === ET.USER_ASK_QUESTION) {
                     this.onUserQuestion(event.payload);
-                } else if (event.type === EventTypes.TESTS_FAILED) {
+                } else if (event.type === ET.TESTS_FAILED) {
                     this.onTestsFailed(event.payload);
-                } else if (event.type === EventTypes.SCENARIO_PHASE_CHANGE) {
+                } else if (event.type === ET.SCENARIO_PHASE_CHANGE) {
                     this.onPhaseChange(event.payload);
                 }
             }
@@ -1753,7 +1724,7 @@
             }
         }
 
-        class ProductManagerAgent extends BaseAgent {
+        class Manager extends Agent {
             constructor() {
                 super({
                     id: 'pm',
@@ -1764,9 +1735,9 @@
 
                 this.checkInInterval = null;
                 this.subscribeToEvents([
-                    EventTypes.SCENARIO_PHASE_CHANGE,
-                    EventTypes.TESTS_PASSED,
-                    EventTypes.INCIDENT_ESCALATED,
+                    ET.SCENARIO_PHASE_CHANGE,
+                    ET.TESTS_PASSED,
+                    ET.INCIDENT_ESCALATED,
                     'director_trigger_agent',
                 ]);
             }
@@ -1781,11 +1752,11 @@
             react(event) {
                 if (event.type === 'director_trigger_agent') {
                     this.handleDirectorTrigger(event.payload);
-                } else if (event.type === EventTypes.SCENARIO_PHASE_CHANGE) {
+                } else if (event.type === ET.SCENARIO_PHASE_CHANGE) {
                     this.onPhaseChange(event.payload);
-                } else if (event.type === EventTypes.TESTS_PASSED) {
+                } else if (event.type === ET.TESTS_PASSED) {
                     this.onTestsPassed(event.payload);
-                } else if (event.type === EventTypes.INCIDENT_ESCALATED) {
+                } else if (event.type === ET.INCIDENT_ESCALATED) {
                     this.onIncidentEscalated(event.payload);
                 }
             }
@@ -1803,7 +1774,7 @@
             }
 
             sendInitialIncident() {
-                worldState.setScenarioPhase('investigation');
+                ws.setScenarioPhase('investigation');
                 this.sendMessage(
                     "Team - we have a P2 incident. Payment validation is failing for some transactions. This is affecting 127 users. Can someone investigate ASAP?",
                     { type: 'alert', severity: 'high' }
@@ -1836,9 +1807,9 @@
 
                 this.updateAgentState({ stress: 10 });
 
-                const state = worldState.getState();
+                const state = ws.getState();
                 const relationship = state.agents.pm.relationship;
-                worldState.updateAgent('pm', { relationship: relationship + 15 });
+                ws.updateAgent('pm', { relationship: relationship + 15 });
             }
 
             onIncidentEscalated(payload) {
@@ -1851,7 +1822,7 @@
             }
         }
 
-        class JuniorDevAgent extends BaseAgent {
+        class Junior extends Agent {
             constructor() {
                 super({
                     id: 'junior_dev',
@@ -1862,9 +1833,9 @@
 
                 this.askedForHelp = false;
                 this.subscribeToEvents([
-                    EventTypes.SCENARIO_PHASE_CHANGE,
-                    EventTypes.USER_DECISION,
-                    EventTypes.TESTS_PASSED,
+                    ET.SCENARIO_PHASE_CHANGE,
+                    ET.USER_DECISION,
+                    ET.TESTS_PASSED,
                     'director_trigger_agent',
                 ]);
             }
@@ -1879,11 +1850,11 @@
             react(event) {
                 if (event.type === 'director_trigger_agent') {
                     this.handleDirectorTrigger(event.payload);
-                } else if (event.type === EventTypes.SCENARIO_PHASE_CHANGE) {
+                } else if (event.type === ET.SCENARIO_PHASE_CHANGE) {
                     this.onPhaseChange(event.payload);
-                } else if (event.type === EventTypes.USER_DECISION) {
+                } else if (event.type === ET.USER_DECISION) {
                     this.onUserDecision(event.payload);
-                } else if (event.type === EventTypes.TESTS_PASSED) {
+                } else if (event.type === ET.TESTS_PASSED) {
                     this.onTestsPassed(event.payload);
                 }
             }
@@ -1926,9 +1897,9 @@
                             { type: 'response' }
                         );
 
-                        worldState.updateUserSkill('communication', 0.5);
-                        const state = worldState.getState();
-                        worldState.updateAgent('junior_dev', {
+                        ws.updateUserSkill('communication', 0.5);
+                        const state = ws.getState();
+                        ws.updateAgent('junior_dev', {
                             relationship: state.agents.junior_dev.relationship + 15,
                         });
                     }
@@ -1945,7 +1916,7 @@
             }
         }
 
-        class IncidentAgent extends BaseAgent {
+        class Incident extends Agent {
             constructor() {
                 super({
                     id: 'incident',
@@ -1957,9 +1928,9 @@
                 this.affectedUsers = 127;
                 this.escalated = false;
                 this.subscribeToEvents([
-                    EventTypes.TESTS_PASSED,
-                    EventTypes.SCENARIO_PHASE_CHANGE,
-                    EventTypes.TIME_TICK,
+                    ET.TESTS_PASSED,
+                    ET.SCENARIO_PHASE_CHANGE,
+                    ET.TIME_TICK,
                     'director_trigger_agent',
                 ]);
             }
@@ -1974,9 +1945,9 @@
             react(event) {
                 if (event.type === 'director_trigger_agent') {
                     this.handleDirectorTrigger(event.payload);
-                } else if (event.type === EventTypes.TESTS_PASSED) {
+                } else if (event.type === ET.TESTS_PASSED) {
                     this.onTestsPassed(event.payload);
-                } else if (event.type === EventTypes.SCENARIO_PHASE_CHANGE) {
+                } else if (event.type === ET.SCENARIO_PHASE_CHANGE) {
                     this.onPhaseChange(event.payload);
                 }
             }
@@ -2013,12 +1984,12 @@ Investigation Required`,
                     { type: 'alert', severity: 'high' }
                 );
 
-                eventBus.publish(EventTypes.INCIDENT_CREATED, {
+                bus.publish(ET.INCIDENT_CREATED, {
                     severity: 'P2',
                     affectedUsers: this.affectedUsers,
                 });
 
-                worldState.completeObjective('obj_1');
+                ws.completeObjective('obj_1');
             }
 
             onTestsPassed(payload) {
@@ -2047,7 +2018,7 @@ Credential Awarded: Backend Debugging - Payments API`,
                         { type: 'approval', severity: 'high' }
                     );
 
-                    eventBus.publish(EventTypes.INCIDENT_RESOLVED);
+                    bus.publish(ET.INCIDENT_RESOLVED);
                 }, 3000);
             }
 
@@ -2057,7 +2028,7 @@ Credential Awarded: Backend Debugging - Payments API`,
                         `📊 STATUS UPDATE
 Phase: Resolution
 Affected Users: ${this.affectedUsers}
-Time Elapsed: ${Math.floor(worldState.getState().scenario.timeElapsed / 60)}m
+Time Elapsed: ${Math.floor(ws.getState().scenario.timeElapsed / 60)}m
 
 Developer working on fix...`,
                         { type: 'response' }
@@ -2066,8 +2037,7 @@ Developer working on fix...`,
             }
         }
 
-        // Code Assistant Agent - AI Pair Programming Assistant
-        class CodeAssistantAgent extends BaseAgent {
+        class Assist extends Agent {
             constructor() {
                 super({
                     id: 'code_assistant',
@@ -2078,30 +2048,29 @@ Developer working on fix...`,
 
                 this.subscribeToEvents([
                     'USER_CODE_QUESTION',
-                    EventTypes.USER_CODE_CHANGE,
+                    ET.USER_CODE_CHANGE,
                 ]);
             }
 
             shouldReact(event) {
                 return event.type === 'USER_CODE_QUESTION' ||
-                       (event.type === EventTypes.USER_CODE_CHANGE && this.detectCodeIssue(event.payload.code));
+                       (event.type === ET.USER_CODE_CHANGE && this.detectCodeIssue(event.payload.code));
             }
 
             react(event) {
                 if (event.type === 'USER_CODE_QUESTION') {
                     this.onUserCodeQuestion(event.payload);
-                } else if (event.type === EventTypes.USER_CODE_CHANGE) {
+                } else if (event.type === ET.USER_CODE_CHANGE) {
                     this.onCodeChange(event.payload);
                 }
             }
 
             onUserCodeQuestion(payload) {
                 const question = payload.question.toLowerCase();
-                const code = worldState.getState().ui.codeEditorContent || '';
+                const code = ws.getState().ui.codeEditorContent || '';
 
                 let response = '';
 
-                // Analyze question context
                 if (question.includes('syntax') || question.includes('how to write')) {
                     response = this.provideSyntaxHelp(question, code);
                 } else if (question.includes('bug') || question.includes('error') || question.includes('wrong')) {
@@ -2185,20 +2154,16 @@ What specific part of the payment validation would you like to work on?`;
             }
 
             detectCodeIssue(code) {
-                // Proactively detect critical issues
-                return false; // Disabled during demo mode
+
+                return false;
             }
 
             onCodeChange(payload) {
-                // Reserved for proactive code analysis
-                // Currently disabled during scripted demo
+
             }
         }
 
-        // ========================
-        // AGENT ORCHESTRATOR
-        // ========================
-        class AgentOrchestrator {
+        class Orch {
             constructor() {
                 this.agents = {};
                 this.initialized = false;
@@ -2206,34 +2171,33 @@ What specific part of the payment validation would you like to work on?`;
             }
 
             initialize() {
-                console.log('[AgentOrchestrator] Initializing agents...');
+                console.log('[Orch] Initializing agents...');
 
                 this.agents = {
-                    senior_dev: new SeniorDevAgent(),
-                    pm: new ProductManagerAgent(),
-                    junior_dev: new JuniorDevAgent(),
-                    incident: new IncidentAgent(),
-                    code_assistant: new CodeAssistantAgent(),
+                    senior_dev: new Senior(),
+                    pm: new Manager(),
+                    junior_dev: new Junior(),
+                    incident: new Incident(),
+                    code_assistant: new Assist(),
                 };
 
-                worldState.subscribe(() => {
-                    // React to state changes if needed
+                ws.subscribe(() => {
+
                 });
 
-                // Start time ticker
                 this.startTimeTicker();
 
                 this.initialized = true;
-                console.log('[AgentOrchestrator] Agents initialized');
+                console.log('[Orch] Agents initialized');
 
-                eventBus.publish(EventTypes.SYSTEM_READY);
+                bus.publish(ET.SYSTEM_READY);
             }
 
             startTimeTicker() {
                 this.timerId = setInterval(() => {
-                    worldState.incrementTime(1);
-                    eventBus.publish(EventTypes.TIME_TICK, {
-                        elapsed: worldState.getState().scenario.timeElapsed,
+                    ws.incrementTime(1);
+                    bus.publish(ET.TIME_TICK, {
+                        elapsed: ws.getState().scenario.timeElapsed,
                     });
                 }, 1000);
             }
@@ -2248,7 +2212,7 @@ What specific part of the payment validation would you like to work on?`;
 
             restart() {
                 this.destroy();
-                worldState.reset();
+                ws.reset();
                 this.initialize();
             }
 
@@ -2263,16 +2227,13 @@ What specific part of the payment validation would you like to work on?`;
             }
         }
 
-        const agentOrchestrator = new AgentOrchestrator();
+        const orch = new Orch();
 
-        // Continue in next script block...
     </script>
 
     <script>
-        // ========================
-        // DEMO SCRIPT
-        // ========================
-        const demoScript = [
+
+        const flow = [
             {
                 time: 0,
                 type: 'show_narration',
@@ -2424,7 +2385,6 @@ What specific part of the payment validation would you like to work on?`;
                 code: `class PaymentValidationError(ValueError):
     pass
 
-
 def process_payment(amount):
     if amount <= 0:
         raise PaymentValidationError("Amount must be greater than zero")
@@ -2509,10 +2469,7 @@ def process_payment(amount):
             },
         ];
 
-        // ========================
-        // DEMO CONTROLLER
-        // ========================
-        class DemoController {
+        class Demo {
             constructor() {
                 this.isPlaying = false;
                 this.currentIndex = 0;
@@ -2523,7 +2480,7 @@ def process_payment(amount):
             start() {
                 if (this.isPlaying) return;
 
-                console.log('[DemoController] Starting choreographed demo...');
+                console.log('[Demo] Starting choreographed demo...');
                 this.isPlaying = true;
                 this.currentIndex = 0;
                 this.startTime = Date.now();
@@ -2532,7 +2489,7 @@ def process_payment(amount):
             }
 
             scheduleActions() {
-                demoScript.forEach((action, index) => {
+                flow.forEach((action, index) => {
                     const delay = action.time * 1000;
                     const timer = setTimeout(() => {
                         this.executeAction(action, index);
@@ -2542,7 +2499,7 @@ def process_payment(amount):
             }
 
             executeAction(action, index) {
-                console.log(`[DemoController] Executing action ${index}:`, action.type);
+                console.log(`[Demo] Executing action ${index}:`, action.type);
                 this.currentIndex = index;
 
                 switch (action.type) {
@@ -2571,11 +2528,11 @@ def process_payment(amount):
             }
 
             showNarration(narration) {
-                guideController.showNarration(narration);
+                guide.showNarration(narration);
             }
 
             showTypingMessage(content, duration) {
-                worldState.updateState({
+                ws.updateState({
                     ui: { userTyping: true },
                 });
 
@@ -2586,21 +2543,21 @@ def process_payment(amount):
                 chars.forEach((char, i) => {
                     setTimeout(() => {
                         currentText += char;
-                        worldState.updateState({
+                        ws.updateState({
                             ui: { typingPreview: currentText },
                         });
                     }, charDelay * i);
                 });
 
                 setTimeout(() => {
-                    worldState.updateState({
+                    ws.updateState({
                         ui: {
                             userTyping: false,
                             typingPreview: '',
                         },
                     });
 
-                    worldState.addMessage({
+                    ws.addMessage({
                         agentId: 'user',
                         agentRole: 'You',
                         content,
@@ -2608,7 +2565,7 @@ def process_payment(amount):
                     });
 
                     if (content.includes('?')) {
-                        eventBus.publish(EventTypes.USER_ASK_QUESTION, {
+                        bus.publish(ET.USER_ASK_QUESTION, {
                             question: content,
                             timestamp: Date.now(),
                         }, 'user');
@@ -2618,12 +2575,12 @@ def process_payment(amount):
 
             triggerAgentMessage(action) {
                 if (action.trigger) {
-                    eventBus.publish('director_trigger_agent', {
+                    bus.publish('director_trigger_agent', {
                         agentId: action.agentId,
                         action: action.trigger,
                     });
                 } else if (action.message) {
-                    worldState.addMessage({
+                    ws.addMessage({
                         agentId: action.agentId,
                         agentRole: this.getAgentRole(action.agentId),
                         content: action.message,
@@ -2633,7 +2590,7 @@ def process_payment(amount):
             }
 
             applyCodeChange(code) {
-                worldState.updateState({
+                ws.updateState({
                     ui: { codeEditorContent: code },
                     scenario: {
                         codebase: {
@@ -2643,7 +2600,7 @@ def process_payment(amount):
                     },
                 });
 
-                eventBus.publish(EventTypes.USER_CODE_CHANGE, {
+                bus.publish(ET.USER_CODE_CHANGE, {
                     code,
                     hasChanges: true,
                     timestamp: Date.now(),
@@ -2651,25 +2608,24 @@ def process_payment(amount):
             }
 
             runTests() {
-                eventBus.publish(EventTypes.USER_RUN_TESTS, {
-                    code: worldState.getState().ui.codeEditorContent,
+                bus.publish(ET.USER_RUN_TESTS, {
+                    code: ws.getState().ui.codeEditorContent,
                     timestamp: Date.now(),
                 }, 'user');
 
-                // Simulate test success
                 setTimeout(() => {
-                    eventBus.publish(EventTypes.TESTS_PASSED, {
-                        code: worldState.getState().ui.codeEditorContent,
+                    bus.publish(ET.TESTS_PASSED, {
+                        code: ws.getState().ui.codeEditorContent,
                         testCount: 12,
                     }, 'system');
 
-                    worldState.completeObjective('obj_2');
-                    worldState.completeObjective('obj_3');
+                    ws.completeObjective('obj_2');
+                    ws.completeObjective('obj_3');
                 }, 1500);
             }
 
             makeDecision(decisionId, choice) {
-                eventBus.publish(EventTypes.USER_DECISION, {
+                bus.publish(ET.USER_DECISION, {
                     decisionId,
                     decision: choice,
                     timestamp: Date.now(),
@@ -2677,9 +2633,9 @@ def process_payment(amount):
             }
 
             completeScenario() {
-                eventBus.publish(EventTypes.SCENARIO_COMPLETE, {
-                    timeElapsed: worldState.getState().scenario.timeElapsed,
-                    objectivesComplete: worldState.areObjectivesComplete(),
+                bus.publish(ET.SCENARIO_COMPLETE, {
+                    timeElapsed: ws.getState().scenario.timeElapsed,
+                    objectivesComplete: ws.areObjectivesComplete(),
                 });
             }
 
@@ -2694,7 +2650,7 @@ def process_payment(amount):
             }
 
             stop() {
-                console.log('[DemoController] Stopping demo...');
+                console.log('[Demo] Stopping demo...');
                 this.timers.forEach(timer => clearTimeout(timer));
                 this.timers = [];
                 this.isPlaying = false;
@@ -2703,42 +2659,33 @@ def process_payment(amount):
             }
         }
 
-        const demoController = new DemoController();
+        const demo = new Demo();
 
-        // Continue with UI Components...
     </script>
 
     <script>
-        // ========================
-        // UI COMPONENTS
-        // ========================
 
-        // Utility function to format time
-        function formatTime(seconds) {
+        function fmtTime(seconds) {
             const mins = Math.floor(seconds / 60);
             const secs = seconds % 60;
             return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         }
 
-        // Initial code for the editor
         const initialCode = `def process_payment(amount):
     if amount > 0:
         return "Success"
     else:
         raise ValueError("Invalid amount")`;
 
-        // Track last rendered message count to avoid re-rendering
-        let lastRenderedMessageCount = 0;
+        let msgCount = 0;
 
-        // Track last rendered narration to avoid flickering
-        let lastRenderedNarration = null;
+        let lastNarr = null;
 
-        // Component: ObjectivesPanel
-        function renderObjectivesPanel() {
-            const container = document.getElementById('objectives-panel');
+        function drawObjectives() {
+            const container = $('objectives-panel');
             if (!container) return;
 
-            const state = worldState.getState();
+            const state = ws.getState();
             const scenario = state.scenario;
 
             const completed = scenario.objectives.filter(obj => obj.completed).length;
@@ -2780,7 +2727,7 @@ def process_payment(amount):
                             ${phaseIcons[scenario.phase]} ${scenario.phase.toUpperCase()}
                         </div>
                         <div class="time-display">
-                            ⏱️ Time: ${formatTime(scenario.timeElapsed)}
+                            ⏱️ Time: ${fmtTime(scenario.timeElapsed)}
                         </div>
                     </div>
 
@@ -2800,12 +2747,11 @@ def process_payment(amount):
             `;
         }
 
-        // Component: CodeEditor
-        function renderCodeEditor() {
-            const container = document.getElementById('code-editor');
+        function drawEditor() {
+            const container = $('code-editor');
             if (!container) return;
 
-            const state = worldState.getState();
+            const state = ws.getState();
             const code = state.ui.codeEditorContent || initialCode;
             const hasChanges = code !== initialCode;
             const lines = code.split('\n');
@@ -2831,13 +2777,12 @@ def process_payment(amount):
                 </div>
             `;
 
-            // Add event listeners
-            const textarea = document.getElementById('code-textarea');
-            const runBtn = document.getElementById('run-tests-btn');
+            const textarea = $('code-textarea');
+            const runBtn = $('run-tests-btn');
 
             textarea.addEventListener('input', (e) => {
                 const newCode = e.target.value;
-                worldState.updateState({
+                ws.updateState({
                     ui: { codeEditorContent: newCode },
                     scenario: {
                         codebase: {
@@ -2846,34 +2791,34 @@ def process_payment(amount):
                     },
                 });
 
-                eventBus.publish(EventTypes.USER_CODE_CHANGE, {
+                bus.publish(ET.USER_CODE_CHANGE, {
                     code: newCode,
                     hasChanges: newCode !== initialCode,
                     timestamp: Date.now(),
                 }, 'user');
 
-                renderCodeEditor();
+                drawEditor();
             });
 
             if (runBtn) {
                 runBtn.addEventListener('click', () => {
-                    const code = worldState.getState().ui.codeEditorContent;
+                    const code = ws.getState().ui.codeEditorContent;
                     const testsPass = code.includes('amount <= 0') && code.includes('raise');
 
-                    eventBus.publish(EventTypes.USER_RUN_TESTS, {
+                    bus.publish(ET.USER_RUN_TESTS, {
                         code,
                         timestamp: Date.now(),
                     }, 'user');
 
                     setTimeout(() => {
                         if (testsPass) {
-                            eventBus.publish(EventTypes.TESTS_PASSED, {
+                            bus.publish(ET.TESTS_PASSED, {
                                 code,
                                 testCount: 12,
                             }, 'system');
 
-                            worldState.completeObjective('obj_2');
-                            worldState.completeObjective('obj_3');
+                            ws.completeObjective('obj_2');
+                            ws.completeObjective('obj_3');
                         } else {
                             const failedTests = [];
                             if (!code.includes('amount <= 0')) {
@@ -2889,7 +2834,7 @@ def process_payment(amount):
                                 });
                             }
 
-                            eventBus.publish(EventTypes.TESTS_FAILED, {
+                            bus.publish(ET.TESTS_FAILED, {
                                 code,
                                 failedTests,
                             }, 'system');
@@ -2899,11 +2844,10 @@ def process_payment(amount):
             }
         }
 
-        // Component: TerminalOutput
-        let terminalOutputLines = [];
+        let termLines = [];
 
-        function renderTerminalOutput() {
-            const container = document.getElementById('terminal-output');
+        function drawTerminal() {
+            const container = $('terminal-output');
             if (!container) return;
 
             container.innerHTML = `
@@ -2918,78 +2862,75 @@ def process_payment(amount):
                         <button class="terminal-clear" id="terminal-clear-btn">Clear</button>
                     </div>
                     <div class="terminal-body" id="terminal-body">
-                        ${terminalOutputLines.length === 0 ? `
+                        ${termLines.length === 0 ? `
                             <div class="terminal-empty">
                                 <span class="empty-icon" style="font-size: 48px; opacity: 0.5;">📝</span>
                                 <p>Run tests to see output here</p>
                             </div>
-                        ` : terminalOutputLines.map(line => `
+                        ` : termLines.map(line => `
                             <div class="terminal-line ${line.className}">${line.text || '&nbsp;'}</div>
                         `).join('')}
                     </div>
                 </div>
             `;
 
-            const clearBtn = document.getElementById('terminal-clear-btn');
+            const clearBtn = $('terminal-clear-btn');
             if (clearBtn) {
                 clearBtn.addEventListener('click', () => {
-                    terminalOutputLines = [];
-                    renderTerminalOutput();
+                    termLines = [];
+                    drawTerminal();
                 });
             }
 
-            // Auto-scroll
-            const body = document.getElementById('terminal-body');
+            const body = $('terminal-body');
             if (body) {
                 body.scrollTop = body.scrollHeight;
             }
         }
 
-        function addTerminalLine(text, className = 'terminal-info') {
-            terminalOutputLines.push({ text, className });
-            renderTerminalOutput();
+        function pushTermLine(text, className = 'terminal-info') {
+            termLines.push({ text, className });
+            drawTerminal();
         }
 
-        // Subscribe to test events
-        eventBus.subscribe(EventTypes.USER_RUN_TESTS, () => {
-            addTerminalLine('$ pytest tests/payments/test_process_payment.py', 'terminal-command');
-            addTerminalLine('Collecting tests...', 'terminal-info');
+        bus.subscribe(ET.USER_RUN_TESTS, () => {
+            pushTermLine('$ pytest tests/payments/test_process_payment.py', 'terminal-command');
+            pushTermLine('Collecting tests...', 'terminal-info');
         });
 
-        eventBus.subscribe(EventTypes.TESTS_PASSED, (event) => {
-            addTerminalLine('', 'terminal-blank');
-            addTerminalLine('test_positive_amount_succeeds ✓', 'terminal-success');
-            addTerminalLine('test_zero_amount_rejected ✓', 'terminal-success');
-            addTerminalLine('test_negative_amount_rejected ✓', 'terminal-success');
-            addTerminalLine('test_returns_success_message ✓', 'terminal-success');
-            addTerminalLine('test_raises_validation_error ✓', 'terminal-success');
-            addTerminalLine('', 'terminal-blank');
-            addTerminalLine(`==================== ${event.payload.testCount} passed in 0.42s ====================`, 'terminal-success');
-            addTerminalLine('', 'terminal-blank');
-            addTerminalLine('✅ All tests passed!', 'terminal-success-bold');
+        bus.subscribe(ET.TESTS_PASSED, (event) => {
+            pushTermLine('', 'terminal-blank');
+            pushTermLine('test_positive_amount_succeeds ✓', 'terminal-success');
+            pushTermLine('test_zero_amount_rejected ✓', 'terminal-success');
+            pushTermLine('test_negative_amount_rejected ✓', 'terminal-success');
+            pushTermLine('test_returns_success_message ✓', 'terminal-success');
+            pushTermLine('test_raises_validation_error ✓', 'terminal-success');
+            pushTermLine('', 'terminal-blank');
+            pushTermLine(`==================== ${event.payload.testCount} passed in 0.42s ====================`, 'terminal-success');
+            pushTermLine('', 'terminal-blank');
+            pushTermLine('✅ All tests passed!', 'terminal-success-bold');
         });
 
-        eventBus.subscribe(EventTypes.TESTS_FAILED, (event) => {
-            addTerminalLine('', 'terminal-blank');
-            addTerminalLine('test_positive_amount_succeeds ✓', 'terminal-success');
+        bus.subscribe(ET.TESTS_FAILED, (event) => {
+            pushTermLine('', 'terminal-blank');
+            pushTermLine('test_positive_amount_succeeds ✓', 'terminal-success');
 
             event.payload.failedTests.forEach(failure => {
-                addTerminalLine(`test_${failure.test} ✗`, 'terminal-error');
-                addTerminalLine(`  ${failure.error}`, 'terminal-error-detail');
+                pushTermLine(`test_${failure.test} ✗`, 'terminal-error');
+                pushTermLine(`  ${failure.error}`, 'terminal-error-detail');
             });
 
-            addTerminalLine('', 'terminal-blank');
-            addTerminalLine(`==================== ${event.payload.failedTests.length} failed ====================`, 'terminal-error');
-            addTerminalLine('', 'terminal-blank');
-            addTerminalLine('❌ Some tests failed. Review the errors above.', 'terminal-error-bold');
+            pushTermLine('', 'terminal-blank');
+            pushTermLine(`==================== ${event.payload.failedTests.length} failed ====================`, 'terminal-error');
+            pushTermLine('', 'terminal-blank');
+            pushTermLine('❌ Some tests failed. Review the errors above.', 'terminal-error-bold');
         });
 
-        // Component: AgentMessages - FIXED to only append new messages
-        function renderAgentMessages() {
-            const container = document.getElementById('agent-messages');
+        function drawAgents() {
+            const container = $('agent-messages');
             if (!container) return;
 
-            const state = worldState.getState();
+            const state = ws.getState();
             const messages = state.ui.messages;
 
             const agentAvatars = {
@@ -3010,10 +2951,9 @@ def process_payment(amount):
                 user: 'You',
             };
 
-            // Only render if container doesn't exist or if there are new messages
-            const body = document.getElementById('messages-body');
+            const body = $('messages-body');
             if (!body) {
-                // Initial render
+
                 container.innerHTML = `
                     <div class="messages-container">
                         <div class="section-header">
@@ -3023,15 +2963,14 @@ def process_payment(amount):
                         <div class="messages-body" id="messages-body"></div>
                     </div>
                 `;
-                lastRenderedMessageCount = 0;
+                msgCount = 0;
             }
 
-            // Append only new messages
-            const messagesBody = document.getElementById('messages-body');
-            const messageCount = document.getElementById('message-count');
+            const messagesBody = $('messages-body');
+            const messageCount = $('message-count');
 
-            if (messagesBody && messages.length > lastRenderedMessageCount) {
-                const newMessages = messages.slice(lastRenderedMessageCount);
+            if (messagesBody && messages.length > msgCount) {
+                const newMessages = messages.slice(msgCount);
 
                 newMessages.forEach(msg => {
                     const messageEl = document.createElement('div');
@@ -3047,21 +2986,18 @@ def process_payment(amount):
                     messagesBody.appendChild(messageEl);
                 });
 
-                // Update count
                 if (messageCount) {
                     messageCount.textContent = messages.length;
                 }
 
-                // Auto-scroll to latest
                 messagesBody.scrollTop = messagesBody.scrollHeight;
 
-                lastRenderedMessageCount = messages.length;
+                msgCount = messages.length;
             }
         }
 
-        // Component: Code Assistant Input (under code editor)
-        function renderCodeAssistantInput() {
-            const container = document.getElementById('code-assistant-input');
+        function drawCodeInput() {
+            const container = $('code-assistant-input');
             if (!container) return;
 
             container.innerHTML = `
@@ -3082,10 +3018,9 @@ def process_payment(amount):
                 </div>
             `;
 
-            // Add event listeners
-            const wrapper = document.getElementById('code-input-wrapper');
-            const input = document.getElementById('code-input-field');
-            const sendBtn = document.getElementById('code-input-send');
+            const wrapper = $('code-input-wrapper');
+            const input = $('code-input-field');
+            const sendBtn = $('code-input-send');
 
             if (input) {
                 input.addEventListener('focus', () => {
@@ -3121,30 +3056,26 @@ def process_payment(amount):
                 const question = input.value.trim();
                 if (!question) return;
 
-                // Add user message to chat
-                worldState.addMessage({
+                ws.addMessage({
                     agentId: 'user',
                     agentRole: 'You',
                     content: question,
                     type: 'user_code_question',
                 });
 
-                // Publish event for code assistant
-                eventBus.publish('USER_CODE_QUESTION', {
+                bus.publish('USER_CODE_QUESTION', {
                     question,
-                    code: worldState.getState().ui.codeEditorContent,
+                    code: ws.getState().ui.codeEditorContent,
                     timestamp: Date.now(),
                 }, 'user');
 
-                // Clear input
                 input.value = '';
                 wrapper.classList.remove('active');
             }
         }
 
-        // Component: Team Chat Input (under team messages)
-        function renderTeamChatInput() {
-            const container = document.getElementById('team-chat-input');
+        function drawTeamInput() {
+            const container = $('team-chat-input');
             if (!container) return;
 
             container.innerHTML = `
@@ -3165,10 +3096,9 @@ def process_payment(amount):
                 </div>
             `;
 
-            // Add event listeners
-            const wrapper = document.getElementById('team-input-wrapper');
-            const input = document.getElementById('team-input-field');
-            const sendBtn = document.getElementById('team-input-send');
+            const wrapper = $('team-input-wrapper');
+            const input = $('team-input-field');
+            const sendBtn = $('team-input-send');
 
             if (input) {
                 input.addEventListener('focus', () => {
@@ -3204,39 +3134,34 @@ def process_payment(amount):
                 const question = input.value.trim();
                 if (!question) return;
 
-                // Add user message to chat
-                worldState.addMessage({
+                ws.addMessage({
                     agentId: 'user',
                     agentRole: 'You',
                     content: question,
                     type: 'user_message',
                 });
 
-                // Publish event for team agents
-                eventBus.publish(EventTypes.USER_ASK_QUESTION, {
+                bus.publish(ET.USER_ASK_QUESTION, {
                     question,
                     timestamp: Date.now(),
                 }, 'user');
 
-                // Clear input
                 input.value = '';
                 wrapper.classList.remove('active');
             }
         }
 
-        // Component: TooltipGuide - Fixed to prevent flickering
-        function renderTooltipGuide() {
-            const container = document.getElementById('tooltip-guide');
+        function drawTip() {
+            const container = $('tooltip-guide');
             if (!container) return;
 
-            const narration = guideController.getCurrentNarration();
+            const narration = guide.getCurrentNarration();
 
-            // Check if narration has actually changed
             const narrationKey = narration ? JSON.stringify(narration) : null;
-            if (narrationKey === lastRenderedNarration) {
-                return; // No change, skip re-render
+            if (narrationKey === lastNarr) {
+                return;
             }
-            lastRenderedNarration = narrationKey;
+            lastNarr = narrationKey;
 
             if (!narration) {
                 container.innerHTML = '';
@@ -3266,35 +3191,31 @@ def process_payment(amount):
             `;
         }
 
-        // Subscribe to guide controller
-        guideController.subscribe(() => {
-            renderTooltipGuide();
+        guide.subscribe(() => {
+            drawTip();
         });
 
-        // Main render function
-        function renderApp() {
-            renderObjectivesPanel();
-            renderCodeEditor();
-            renderCodeAssistantInput(); // AI coding help under editor
-            renderTerminalOutput();
-            renderAgentMessages(); // Now only appends new messages
-            renderTeamChatInput(); // Team discussion under messages
-            // renderTooltipGuide is handled by guideController.subscribe() - removed to prevent flickering
+        function drawApp() {
+            drawObjectives();
+            drawEditor();
+            drawCodeInput();
+            drawTerminal();
+            drawAgents();
+            drawTeamInput();
+
         }
 
-        // Subscribe to state changes
-        worldState.subscribe(() => {
-            renderApp();
+        ws.subscribe(() => {
+            drawApp();
         });
 
-        // Subscribe to scenario complete
-        eventBus.subscribe(EventTypes.SCENARIO_COMPLETE, () => {
-            showCompletionOverlay();
+        bus.subscribe(ET.SCENARIO_COMPLETE, () => {
+            showOverlay();
         });
 
-        function showCompletionOverlay() {
-            const state = worldState.getState();
-            const root = document.getElementById('root');
+        function showOverlay() {
+            const state = ws.getState();
+            const root = $('root');
 
             const overlay = document.createElement('div');
             overlay.className = 'completion-overlay';
@@ -3316,116 +3237,112 @@ def process_payment(amount):
                             <span class="stat-value">⭐⭐⭐⭐⭐</span>
                         </div>
                     </div>
-                    <button class="btn-primary btn-large" onclick="handleRestart()">Try Another Scenario</button>
+                    <button class="btn-primary btn-large" onclick="resetDemo()">Try Another Scenario</button>
                 </div>
             `;
 
             root.appendChild(overlay);
         }
 
-        // Initialize the app
-        function initializeApp() {
-            const root = document.getElementById('root');
+        function init() {
+            const root = $('root');
 
-            root.innerHTML = `
-                <div class="interactive-app">
-                    <header class="app-header">
-                        <div class="header-left">
-                            <img src="logo.png" alt="SimuWork logo" class="app-logo" />
-                            <div class="app-title-group">
-                                <h1 class="app-title">
-                                    SimuWork <span class="live-badge"><span class="live-dot"></span>LIVE</span>
-                                </h1>
-                                <p class="app-subtitle">AI-Powered Job Simulation Platform</p>
+            setTimeout(() => {
+                root.innerHTML = `
+                    <div class="interactive-app">
+                        <header class="app-header">
+                            <div class="header-left">
+                                <img src="logo.png" alt="SimuWork logo" class="app-logo" />
+                                <div class="app-title-group">
+                                    <h1 class="app-title">
+                                        SimuWork <span class="live-badge"><span class="live-dot"></span>LIVE</span>
+                                    </h1>
+                                    <p class="app-subtitle">AI-Powered Job Simulation Platform</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="header-right">
-                            <button class="btn-primary btn-large" id="start-demo-btn">▶️ Start Demo</button>
-                            <div class="status-indicator">
-                                <span class="status-dot"></span>
-                                Agents Active
+                            <div class="header-right">
+                                <button class="btn-primary btn-large" id="start-demo-btn">▶️ Start Demo</button>
+                                <div class="status-indicator">
+                                    <span class="status-dot"></span>
+                                    Agents Active
+                                </div>
                             </div>
-                        </div>
-                    </header>
+                        </header>
 
-                    <main class="app-main">
-                        <div class="left-column">
-                            <section class="section objectives-section" id="objectives-panel"></section>
-                            <section class="section terminal-section" id="terminal-output"></section>
-                        </div>
+                        <main class="app-main">
+                            <div class="left-column">
+                                <section class="section objectives-section" id="objectives-panel"></section>
+                                <section class="section terminal-section" id="terminal-output"></section>
+                            </div>
 
-                        <div class="center-column">
-                            <section class="section code-section" id="code-editor"></section>
-                            <div id="code-assistant-input"></div>
-                        </div>
+                            <div class="center-column">
+                                <section class="section code-section" id="code-editor"></section>
+                                <div id="code-assistant-input"></div>
+                            </div>
 
-                        <div class="right-column">
-                            <section class="section messages-section" id="agent-messages"></section>
-                            <div id="team-chat-input"></div>
-                        </div>
-                    </main>
+                            <div class="right-column">
+                                <section class="section messages-section" id="agent-messages"></section>
+                                <div id="team-chat-input"></div>
+                            </div>
+                        </main>
 
-                    <div id="tooltip-guide"></div>
+                        <div id="tooltip-guide"></div>
 
-                    <footer class="app-footer">
-                        <p class="footer-text">💡 Train your critical thinking with AI assistance - Ask questions, get help, and learn by doing</p>
-                    </footer>
-                </div>
-            `;
+                        <footer class="app-footer">
+                            <p class="footer-text">💡 Train your critical thinking with AI assistance - Ask questions, get help, and learn by doing</p>
+                        </footer>
+                    </div>
+                `;
 
-            // Initialize systems
-            console.log('Initializing SimuWork Platform...');
-            agentOrchestrator.initialize();
+                console.log('Initializing SimuWork Platform...');
+                orch.initialize();
 
-            // Render initial state
-            renderApp();
+                drawApp();
 
-            // Add event listener to start button
-            const startBtn = document.getElementById('start-demo-btn');
-            if (startBtn) {
-                startBtn.addEventListener('click', handleStartDemo);
-            }
+                const startBtn = $('start-demo-btn');
+                if (startBtn) {
+                    startBtn.addEventListener('click', startDemo);
+                }
+            }, 2300);
         }
 
-        function handleStartDemo() {
-            const startBtn = document.getElementById('start-demo-btn');
+        function startDemo() {
+            const startBtn = $('start-demo-btn');
             if (startBtn) {
-                startBtn.outerHTML = '<button class="btn-secondary" onclick="handleRestart()">🔄 Restart</button>';
+                startBtn.outerHTML = '<button class="btn-secondary" onclick="resetDemo()">🔄 Restart</button>';
             }
-            demoController.start();
+            demo.start();
         }
 
-        function handleRestart() {
-            // Remove completion overlay if exists
-            const overlay = document.querySelector('.completion-overlay');
+        function resetDemo() {
+
+            const overlay = qs('.completion-overlay');
             if (overlay) {
                 overlay.remove();
             }
 
-            demoController.stop();
-            guideController.reset();
-            agentOrchestrator.restart();
-            terminalOutputLines = [];
-            lastRenderedMessageCount = 0; // Reset message counter
-            lastRenderedNarration = null; // Reset narration tracker
-            renderApp();
+            demo.stop();
+            guide.reset();
+            orch.restart();
+            termLines = [];
+            msgCount = 0;
+            lastNarr = null;
+            drawApp();
 
-            // Reset button
-            const headerRight = document.querySelector('.header-right');
+            const headerRight = qs('.header-right');
             if (headerRight) {
                 const btnContainer = headerRight.querySelector('button, .btn-secondary');
                 if (btnContainer) {
                     btnContainer.outerHTML = '<button class="btn-primary btn-large" id="start-demo-btn">▶️ Start Demo</button>';
-                    document.getElementById('start-demo-btn').addEventListener('click', handleStartDemo);
+                    $('start-demo-btn').addEventListener('click', startDemo);
                 }
             }
         }
 
-        // Start the application when DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeApp);
+            document.addEventListener('DOMContentLoaded', init);
         } else {
-            initializeApp();
+            init();
         }
     </script>
 </body>
