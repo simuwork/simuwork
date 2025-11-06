@@ -16,18 +16,32 @@ const CodeEditor = ({ onCodeChange }) => {
   const [lineHighlights, setLineHighlights] = useState([]);
 
   useEffect(() => {
-    // Update world state when code changes
-    worldState.updateState({
-      scenario: {
-        codebase: {
-          currentFile: 'payments/utils.py',
-          hasChanges,
-        },
-      },
-      ui: {
-        codeEditorContent: code,
-      },
+    // Subscribe to code changes from demo controller
+    const unsubscribe = worldState.subscribe((newState) => {
+      if (newState.ui.codeEditorContent && newState.ui.codeEditorContent !== code) {
+        setCode(newState.ui.codeEditorContent);
+        setHasChanges(newState.ui.codeEditorContent !== initialCode);
+      }
     });
+
+    return unsubscribe;
+  }, [code]);
+
+  useEffect(() => {
+    // Update world state when code changes manually
+    if (!worldState.getState().ui.codeEditorContent || code === worldState.getState().ui.codeEditorContent) {
+      worldState.updateState({
+        scenario: {
+          codebase: {
+            currentFile: 'payments/utils.py',
+            hasChanges,
+          },
+        },
+        ui: {
+          codeEditorContent: code,
+        },
+      });
+    }
   }, [code, hasChanges]);
 
   const handleCodeChange = (e) => {

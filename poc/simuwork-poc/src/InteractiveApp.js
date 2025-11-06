@@ -10,12 +10,14 @@ import ObjectivesPanel from './components/interactive/ObjectivesPanel';
 import { agentOrchestrator } from './systems/AgentOrchestrator';
 import { worldState } from './systems/WorldState';
 import { eventBus, EventTypes } from './systems/EventBus';
+import { demoController } from './systems/DemoController';
 import './InteractiveApp.css';
 
 const InteractiveApp = () => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [pendingDecision, setPendingDecision] = useState(null);
   const [scenarioComplete, setScenarioComplete] = useState(false);
+  const [demoStarted, setDemoStarted] = useState(false);
 
   useEffect(() => {
     // Initialize the agent system
@@ -50,7 +52,14 @@ const InteractiveApp = () => {
   const handleRestart = () => {
     setScenarioComplete(false);
     setPendingDecision(null);
+    setDemoStarted(false);
+    demoController.stop();
     agentOrchestrator.restart();
+  };
+
+  const handleStartDemo = () => {
+    setDemoStarted(true);
+    demoController.start();
   };
 
   const handleDecisionMade = (decision) => {
@@ -78,9 +87,15 @@ const InteractiveApp = () => {
           </p>
         </div>
         <div className="header-right">
-          <button className="btn-secondary" onClick={handleRestart}>
-            🔄 Restart Scenario
-          </button>
+          {!demoStarted ? (
+            <button className="btn-primary btn-large" onClick={handleStartDemo}>
+              ▶️ Start Interactive Demo
+            </button>
+          ) : (
+            <button className="btn-secondary" onClick={handleRestart}>
+              🔄 Restart
+            </button>
+          )}
           <div className="status-indicator">
             <span className="status-dot"></span>
             Agents Active

@@ -144,6 +144,21 @@ body {
   color: white;
 }
 
+.btn-large {
+  font-size: 16px;
+  padding: 12px 28px;
+  animation: glow 2s infinite;
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.7);
+  }
+}
+
 /* Main Layout */
 .app-main {
   flex: 1;

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { worldState } from '../../systems/WorldState';
+import ChatInput from './ChatInput';
 
 const agentAvatars = {
   senior_dev: '👨‍💻',
@@ -10,6 +11,7 @@ const agentAvatars = {
   junior_dev: '🧑‍💻',
   incident: '🚨',
   director: '🎯',
+  user: '👤',
 };
 
 const agentNames = {
@@ -18,6 +20,7 @@ const agentNames = {
   junior_dev: 'Alex (Junior Dev)',
   incident: 'Incident Monitor',
   director: 'System',
+  user: 'You',
 };
 
 const AgentMessages = () => {
@@ -84,7 +87,7 @@ const AgentMessages = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
-              className="message-item"
+              className={`message-item ${message.agentId === 'user' ? 'user-message' : ''}`}
               style={getMessageStyle(message)}
             >
               <div className="message-header-row">
@@ -123,6 +126,8 @@ const AgentMessages = () => {
           ))}
         </AnimatePresence>
       </div>
+
+      <ChatInput />
 
       <style>{`
         .agent-messages-container {
@@ -205,6 +210,18 @@ const AgentMessages = () => {
 
         .message-item:hover {
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        /* User messages - different style */
+        .message-item.user-message {
+          background: linear-gradient(135deg, #e8eaf6 0%, #f3e5f5 100%);
+          border-left-color: #667eea;
+          border-left-width: 4px;
+        }
+
+        .message-item.user-message .agent-name {
+          color: #667eea;
+          font-weight: 700;
         }
 
         .message-header-row {
