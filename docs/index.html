@@ -99,33 +99,78 @@
         border-color: rgba(156, 214, 255, 0.45);
         transform: translateY(-3px);
       }
-      .primary-button {
+      .primary-button,
+      .button-ghost {
+        position: relative;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(120deg, #3ab8ff 0%, #1c5aff 100%);
-        color: #f8fafc;
-        border: 1px solid rgba(136, 200, 255, 0.45);
-        box-shadow: 0 16px 36px rgba(24, 82, 166, 0.45);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        gap: 0.5rem;
+        border-radius: 0.9rem;
+        border: 1px solid transparent;
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease, color 0.25s ease, opacity 0.25s ease;
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        overflow: hidden;
+        isolation: isolate;
       }
-      .primary-button:hover {
-        transform: translateY(-1px) scale(1.01);
-        box-shadow: 0 18px 44px rgba(24, 82, 166, 0.55);
+      .primary-button::before,
+      .button-ghost::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 70%);
+        opacity: 0.12;
+        transition: opacity 0.25s ease;
+        pointer-events: none;
+        mix-blend-mode: screen;
+      }
+      .primary-button {
+        background: linear-gradient(118deg, #1d4fff 0%, #0e2f99 100%);
+        color: #f4f8ff;
+        border-color: rgba(82, 146, 255, 0.55);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 16px 36px rgba(6, 21, 53, 0.55);
+      }
+      .primary-button:hover,
+      .primary-button:focus-visible {
+        transform: translateY(-2px);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26), 0 24px 52px rgba(4, 18, 50, 0.62);
+      }
+      .primary-button:active {
+        transform: translateY(0);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 12px 28px rgba(4, 18, 50, 0.48);
       }
       .button-ghost {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(255, 255, 255, 0.08);
-        color: #dce9ff;
-        border: 1px solid rgba(148, 197, 255, 0.32);
-        transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        background: linear-gradient(138deg, rgba(11, 31, 72, 0.92), rgba(5, 17, 42, 0.94));
+        color: #e4eeff;
+        border-color: rgba(110, 168, 255, 0.45);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15), 0 14px 32px rgba(3, 12, 33, 0.55);
       }
-      .button-ghost:hover {
-        background: rgba(255, 255, 255, 0.16);
-        border-color: rgba(164, 210, 255, 0.45);
-        transform: translateY(-1px);
+      .button-ghost:hover,
+      .button-ghost:focus-visible {
+        background: linear-gradient(138deg, rgba(28, 84, 178, 0.85), rgba(7, 21, 53, 0.95));
+        border-color: rgba(148, 197, 255, 0.72);
+        color: #f5f9ff;
+        transform: translateY(-2px);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22), 0 18px 44px rgba(3, 12, 33, 0.6);
+      }
+      .button-ghost:active {
+        transform: translateY(0);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 12px 30px rgba(3, 12, 33, 0.52);
+      }
+      .primary-button:focus-visible,
+      .button-ghost:focus-visible {
+        outline: none;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.32), 0 0 0 3px rgba(62, 130, 255, 0.55), 0 20px 48px rgba(6, 20, 52, 0.4);
+      }
+      .primary-button:hover::before,
+      .primary-button:focus-visible::before,
+      .button-ghost:hover::before,
+      .button-ghost:focus-visible::before {
+        opacity: 0.35;
       }
       .accent-dot {
         background: linear-gradient(135deg, #78d3ff, #1f6cff);
@@ -136,6 +181,10 @@
       }
       .progress-fill {
         background: linear-gradient(90deg, #53c8ff 0%, #1b5fff 100%);
+      }
+      .logo-card {
+        background: linear-gradient(140deg, rgba(120, 195, 255, 0.55), rgba(242, 249, 255, 0.4));
+        border: 1px solid rgba(164, 214, 255, 0.55);
       }
       .tag {
         display: inline-flex;
@@ -160,7 +209,7 @@
         <header class="glass-panel p-8 sm:p-12">
           <div class="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div class="flex items-start gap-6">
-              <img src="logo.png" alt="SimuWork logo" class="w-20 sm:w-28 md:w-32 h-auto rounded-2xl border border-white/20 bg-white/30 p-3 shadow-lg" />
+              <img src="logo.png" alt="SimuWork logo" class="w-20 sm:w-28 md:w-32 h-auto rounded-2xl logo-card p-3 shadow-lg" />
               <div class="space-y-4">
                 <span class="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.28em] uppercase text-sky-100/80">
                   <span class="accent-dot h-2 w-2 rounded-full"></span>
@@ -169,9 +218,9 @@
                 <h1 class="text-4xl sm:text-5xl font-semibold text-white leading-tight">SimuWork</h1>
                 <p class="max-w-xl text-base sm:text-lg text-slate-300">Practice real company workflows with AI-powered environments tailored to the teams you want to join.</p>
                 <div class="flex flex-wrap gap-3">
-                  <button class="primary-button px-6 py-2.5 rounded-xl text-sm font-semibold uppercase tracking-wide poc-disabled" type="button" data-poc>
-                    Explore Scenarios
-                  </button>
+                  <a href="demo.html" class="primary-button px-6 py-2.5 rounded-xl text-sm font-semibold uppercase tracking-wide">
+                    Launch Demo
+                  </a>
                   <button class="button-ghost px-6 py-2.5 rounded-xl text-sm font-semibold uppercase tracking-wide poc-disabled" type="button" data-poc>
                     View Roadmap
                   </button>
@@ -434,7 +483,7 @@
         <section class="glass-panel p-6 sm:p-8">
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div class="flex items-start gap-4">
-              <img src="logo.png" alt="SimuWork logo" class="w-12 md:w-16 h-auto rounded-xl border border-white/25 bg-white/30 p-2" />
+              <img src="logo.png" alt="SimuWork logo" class="w-12 md:w-16 h-auto rounded-xl logo-card p-2" />
               <div>
                 <h2 class="text-2xl font-semibold text-white mb-2">Try the SimuWork Simulator</h2>
                 <p class="text-slate-300">Spin up realistic, AI-powered environments to practice real-world engineering workflows.</p>
