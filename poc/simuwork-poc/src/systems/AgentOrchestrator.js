@@ -1,6 +1,5 @@
 // AgentOrchestrator.js - Initializes and manages all agents in the simulation
 
-import DirectorAgent from '../agents/DirectorAgent';
 import SeniorDevAgent from '../agents/SeniorDevAgent';
 import ProductManagerAgent from '../agents/ProductManagerAgent';
 import JuniorDevAgent from '../agents/JuniorDevAgent';
@@ -24,8 +23,7 @@ class AgentOrchestrator {
 
     console.log('[Orchestrator] Initializing agent system...');
 
-    // Create all agents
-    this.agents.director = new DirectorAgent();
+    // Create all agents (for scripted demo)
     this.agents.senior_dev = new SeniorDevAgent();
     this.agents.pm = new ProductManagerAgent();
     this.agents.junior_dev = new JuniorDevAgent();
@@ -90,11 +88,6 @@ class AgentOrchestrator {
     Object.values(this.agents).forEach((agent) => {
       agent.isActive = false;
     });
-
-    // Stop director tick
-    if (this.agents.director) {
-      this.agents.director.stopTick();
-    }
   }
 
   // Resume all agents
@@ -109,11 +102,6 @@ class AgentOrchestrator {
     Object.values(this.agents).forEach((agent) => {
       agent.isActive = true;
     });
-
-    // Restart director tick
-    if (this.agents.director) {
-      this.agents.director.startTick();
-    }
   }
 
   // Reset simulation
