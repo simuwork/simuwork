@@ -1,0 +1,466 @@
+# SimuWork Living Platform - Architecture & Implementation Plan
+
+## Vision
+Create a "living" simulation platform where AI agents dynamically generate scenarios, respond to user actions, and create an emergent, realistic work environment that adapts in real-time.
+
+---
+
+## Core Architecture
+
+### 1. Agent Ecosystem
+
+#### Director Agent (Orchestrator)
+**Role**: Master coordinator of the entire simulation world
+**Responsibilities**:
+- Maintains global world state
+- Decides when to trigger events/complications
+- Balances challenge difficulty based on user performance
+- Spawns and coordinates other agents
+- Tracks user progression and skill development
+- Determines scenario flow and pacing
+
+**Key Behaviors**:
+- Monitors user actions continuously
+- Evaluates when user is ready for next challenge level
+- Introduces complications at appropriate times
+- Ensures coherent narrative across all agents
+
+#### Environment Agents
+
+**Codebase Agent**
+- Maintains living codebase state
+- Generates realistic bugs organically
+- Creates code that user must work with
+- Simulates git history and commits
+- Tracks technical debt
+
+**Incident Agent**
+- Generates production issues dynamically
+- Creates realistic error logs and stack traces
+- Simulates monitoring alerts (Datadog/New Relic style)
+- Escalates issues based on user response
+- Creates customer impact scenarios
+
+**Company Context Agent**
+- Generates company culture and policies
+- Creates team structure and dynamics
+- Simulates internal documentation/wiki
+- Generates Slack-like communications
+- Maintains company "lore" and history
+
+#### Mentor Agents (NPCs)
+
+**Senior Engineer Mentor**
+- Personality: Experienced, sometimes cryptic, Socratic
+- Provides technical guidance
+- Reviews code with realistic feedback
+- Asks probing questions
+- Adjusts help level based on user struggles
+
+**Product Manager Agent**
+- Personality: Business-focused, deadline-conscious
+- Provides requirements and context
+- Creates realistic pressure/urgency
+- Changes requirements (realistically)
+- Requests updates and ETAs
+
+**Junior Developer Teammate**
+- Personality: Eager, makes mistakes, asks questions
+- Requests help from user
+- Validates user's teaching ability
+- Creates opportunities for mentorship
+- Makes realistic mistakes
+
+**DevOps Engineer**
+- Personality: Pragmatic, infrastructure-focused
+- Provides deployment assistance
+- Creates infrastructure challenges
+- Teaches cloud/DevOps concepts
+- Monitors system health
+
+#### Meta Agents
+
+**Performance Analyzer**
+- Continuously evaluates user code quality
+- Identifies learning patterns and knowledge gaps
+- Tracks time on task and efficiency
+- Detects antipatterns in real-time
+- Adjusts scenario difficulty
+
+**Credential Validator**
+- Tracks demonstrated competencies
+- Issues micro-credentials for specific skills
+- Creates evidence artifacts
+- Validates mastery through repeated success
+- Generates employer-facing reports
+
+---
+
+## 2. World State Management
+
+### State Schema
+```javascript
+{
+  // User Profile
+  user: {
+    id: string,
+    skillLevels: {
+      debugging: 1-10,
+      systemDesign: 1-10,
+      testing: 1-10,
+      communication: 1-10,
+      ...
+    },
+    reputation: 0-100,
+    completedScenarios: [],
+    currentObjectives: [],
+    learningStyle: "visual" | "hands-on" | "conceptual"
+  },
+
+  // World State
+  world: {
+    currentTime: timestamp,
+    company: {
+      name: string,
+      techStack: [],
+      teamMembers: [],
+      culture: object
+    },
+    activeIncidents: [],
+    techDebt: [],
+    recentEvents: []
+  },
+
+  // Scenario State
+  scenario: {
+    type: "debugging" | "feature_dev" | "incident_response" | "code_review",
+    difficulty: 1-10,
+    objectives: [],
+    timeElapsed: number,
+    userActions: [],
+    environmentState: object
+  },
+
+  // Agent States
+  agents: {
+    [agentId]: {
+      mood: string,
+      currentFocus: string,
+      memory: [],
+      relationshipWithUser: number
+    }
+  }
+}
+```
+
+### State Update Flow
+1. User performs action
+2. Director Agent observes and updates world state
+3. Relevant agents react to state changes
+4. Performance Analyzer evaluates action quality
+5. UI updates reflect new state
+6. New events may be triggered
+
+---
+
+## 3. Interactive POC Scenario Design
+
+### POC Scenario: "Payment API Debugging Crisis"
+
+**Setting**: You're a backend engineer at "PayFlow" (Stripe-like company)
+
+**Act 1: Morning Standup (Orientation)**
+- PM Agent: "Hey team, we have reports of payment failures for zero-dollar auth checks"
+- Senior Dev: "I looked at it briefly, seems like a validation issue. Can you investigate?"
+- User prompted to start investigation
+
+**Act 2: Initial Investigation (User Interaction)**
+- Codebase Agent presents the problematic code
+- User can:
+  - Read code
+  - Ask questions to Senior Dev
+  - Check logs (generated by Incident Agent)
+  - Run tests
+  - Make code changes
+
+**Act 3: Dynamic Reactions (Living System)**
+- If user changes wrong file:
+  - Tests fail
+  - Senior Dev: "Hmm, that's not quite right. What's the actual validation logic?"
+
+- If user takes too long:
+  - PM Agent: "Any ETA? We're seeing increased failures"
+  - Incident Agent: Escalates alert severity
+
+- If user asks good questions:
+  - Senior Dev provides architecture context
+  - Unlocks new information
+
+**Act 4: Complication (Emergent Event)**
+- While user is debugging, Junior Dev Agent messages:
+  - "Hey! I'm seeing errors in the refund API too. Is this related?"
+  - User must decide: focus on original task or help teammate?
+  - Director Agent tracks this decision for future scenarios
+
+**Act 5: Resolution & Validation**
+- User implements fix
+- Code actually runs (sandboxed)
+- Tests execute in real-time
+- Senior Dev reviews code
+- PM Agent acknowledges completion
+- Credential Validator awards "Payment Systems Debugging" badge
+
+**Act 6: Aftermath (Persistent Consequences)**
+- User's fix becomes part of the "codebase"
+- Junior Dev remembers if user helped them
+- PM notes if user met deadline
+- Reputation adjusted
+- Next scenario difficulty calibrated
+
+---
+
+## 4. Technical Implementation Strategy
+
+### Phase 1: Core Infrastructure (MVP)
+
+**1. Agent Communication Bus**
+```javascript
+class EventBus {
+  subscribe(eventType, agentId, handler)
+  publish(eventType, payload)
+  getState()
+  updateState(updates)
+}
+```
+
+**2. Base Agent Class**
+```javascript
+class Agent {
+  constructor(id, personality, role)
+  observe(worldState)
+  decide(worldState, userAction)
+  act()
+  remember(interaction)
+}
+```
+
+**3. Director Implementation**
+```javascript
+class DirectorAgent extends Agent {
+  tick(worldState, userActions)
+  shouldTriggerEvent(probability, conditions)
+  spawnScenario(type, difficulty)
+  evaluateProgress(userActions)
+  adjustDifficulty()
+}
+```
+
+### Phase 2: Interactive UI Components
+
+**1. Split-Panel Layout**
+- Left: Code Editor / Workspace
+- Right: Agent Communications
+- Bottom: Terminal / Test Output
+- Top: Scenario Objectives & Status
+
+**2. Real-Time Agent Messages**
+- Chat-like interface for agent communications
+- Typing indicators when agents are "thinking"
+- Different visual styles per agent personality
+- Inline code suggestions and highlights
+
+**3. Interactive Elements**
+- Code editor with syntax highlighting
+- Click to ask questions about specific lines
+- Multiple choice decisions at key moments
+- Drag-and-drop for architecture diagrams
+- Real button to "deploy" changes
+
+### Phase 3: Scenario Engine
+
+**1. Dynamic Content Generation**
+```javascript
+class ScenarioEngine {
+  generateCodebase(techStack, complexity)
+  injectBug(codebase, bugType, difficulty)
+  createLogs(incident, timeRange)
+  generateTests(codebase, coverage)
+}
+```
+
+**2. LLM Integration Points**
+- Agent dialogue generation
+- Code review feedback
+- Adaptive hint generation
+- Natural language parsing of user questions
+- Dynamic scenario branching
+
+**3. Validation & Testing**
+- Sandboxed code execution (Docker/Web Workers)
+- Test suite generation and execution
+- Code quality analysis
+- Performance metrics tracking
+
+### Phase 4: Intelligence Layer
+
+**1. Performance Analysis**
+```javascript
+class PerformanceAnalyzer {
+  analyzeCodeQuality(submission)
+  detectKnowledgeGaps(actions, mistakes)
+  calculateSkillLevel(history)
+  recommendNextChallenge(profile)
+}
+```
+
+**2. Adaptive Difficulty**
+- Track success/failure rates
+- Adjust hint frequency
+- Scale problem complexity
+- Introduce advanced concepts gradually
+
+**3. Credential System**
+- Micro-credentials for specific skills
+- Evidence collection (code diffs, decisions made)
+- Employer-facing reports
+- Skill verification mechanism
+
+---
+
+## 5. POC Features to Demonstrate
+
+### Must-Have (Core Living Platform Features)
+1. ✅ User can type/edit code in real editor
+2. ✅ Multiple agents respond to user actions
+3. ✅ Agents have distinct personalities
+4. ✅ Dynamic events triggered by user behavior
+5. ✅ Real-time feedback based on code changes
+6. ✅ Scenario branches based on user decisions
+7. ✅ Tests actually run and show results
+8. ✅ Persistent state across interactions
+
+### Nice-to-Have (Enhanced Realism)
+1. ⭐ Chat with agents (ask questions)
+2. ⭐ Code suggestions appear inline
+3. ⭐ Time pressure mechanics
+4. ⭐ Teammate reputation system
+5. ⭐ Multiple choice key decisions
+6. ⭐ Architecture diagram interactions
+7. ⭐ Credential progress visualization
+8. ⭐ "Past events" timeline
+
+### Future Enhancements
+1. 🚀 Full LLM integration for responses
+2. 🚀 Multi-day persistent world
+3. 🚀 User-driven project selection
+4. 🚀 Multiplayer (multiple users in same scenario)
+5. 🚀 Video/screenshare from "teammates"
+6. 🚀 Integration with real company projects
+
+---
+
+## 6. Implementation Phases
+
+### Week 1: Foundation
+- Set up agent communication architecture
+- Implement Director Agent skeleton
+- Build basic world state management
+- Create simple event system
+
+### Week 2: Agents & Interactions
+- Implement 3 core agents (Senior Dev, PM, Incident)
+- Build agent personality system
+- Create message generation logic
+- Add agent memory/context
+
+### Week 3: Interactive UI
+- Build code editor component
+- Create agent chat interface
+- Add terminal for test output
+- Implement real-time updates
+
+### Week 4: Scenario & Intelligence
+- Build scenario generation engine
+- Implement performance analyzer
+- Add adaptive difficulty
+- Create credential validation
+
+### Week 5: Polish & Testing
+- User testing and feedback
+- Performance optimization
+- Visual polish and animations
+- Documentation
+
+---
+
+## 7. Success Metrics
+
+### Engagement
+- Session length (target: 15+ minutes)
+- Return rate (target: 60%+)
+- Scenario completion rate
+
+### Learning Effectiveness
+- Skill improvement over time
+- Hint reliance reduction
+- Code quality improvement
+
+### Platform Differentiation
+- "Feels real" feedback
+- Perceived value vs alternatives
+- Employer interest in credentials
+
+---
+
+## 8. Technical Stack
+
+### Frontend
+- React (existing)
+- Monaco Editor (VS Code editor component)
+- Framer Motion (existing)
+- Socket.io for real-time communication
+- Zustand for state management
+
+### Backend / Agent System
+- Node.js + Express
+- OpenAI API for agent intelligence
+- WebSocket server for real-time
+- Docker for code sandboxing
+- Redis for state persistence
+
+### POC Simplification
+- Mock LLM responses initially (predefined with branches)
+- Local state management (no backend initially)
+- Simulated code execution (pre-validated paths)
+- Can upgrade to real LLM/execution later
+
+---
+
+## 9. Key Differentiators
+
+**vs. Traditional Courses**
+- Not linear, reacts to your actions
+- Never the same experience twice
+- Real consequences and decisions
+
+**vs. Forage/Prepfully**
+- AI mentors that adapt to you
+- Living world with emergent events
+- Persistent progression and relationships
+
+**vs. Real Internships**
+- Available 24/7, no location limits
+- Safe environment to fail
+- Compressed time (experience months in hours)
+- Validated, portable credentials
+
+---
+
+## Next: Let's Build!
+
+Starting with interactive POC implementation focusing on:
+1. Agent communication system
+2. Interactive code editor
+3. Dynamic agent responses
+4. Real-time scenario progression
+5. User decision branching
