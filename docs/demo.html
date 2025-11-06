@@ -701,11 +701,6 @@
         .terminal-error { color: #ef4444; }
         .terminal-error-detail { color: #ef4444; padding-left: 20px; font-size: 12px; opacity: 0.8; }
         .terminal-error-bold { color: #ef4444; font-weight: 700; }
-        .terminal-running {
-            color: #3b82f6;
-            font-style: italic;
-            animation: pulse 1.5s infinite;
-        }
 
         .messages-container {
             display: flex;
@@ -944,16 +939,6 @@
             background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
         }
 
-        .typing-cursor {
-            display: inline-block;
-            width: 2px;
-            height: 16px;
-            background: #667eea;
-            margin-left: 2px;
-            animation: blink 1s infinite;
-            box-shadow: 0 0 8px #667eea;
-        }
-
         .tooltip-guide {
             position: fixed;
             z-index: 3000;
@@ -1045,32 +1030,20 @@
             USER_CODE_CHANGE: 'user_code_change',
             USER_RUN_TESTS: 'user_run_tests',
             USER_ASK_QUESTION: 'user_ask_question',
-            USER_DEPLOY: 'user_deploy',
-            USER_VIEW_FILE: 'user_view_file',
             USER_DECISION: 'user_decision',
-            AGENT_MESSAGE: 'agent_message',
             AGENT_CODE_REVIEW: 'agent_code_review',
             AGENT_HINT: 'agent_hint',
             AGENT_QUESTION: 'agent_question',
             SCENARIO_PHASE_CHANGE: 'scenario_phase_change',
             SCENARIO_OBJECTIVE_COMPLETE: 'scenario_objective_complete',
-            SCENARIO_COMPLICATION: 'scenario_complication',
             SCENARIO_COMPLETE: 'scenario_complete',
             INCIDENT_CREATED: 'incident_created',
             INCIDENT_ESCALATED: 'incident_escalated',
             INCIDENT_RESOLVED: 'incident_resolved',
-            TESTS_STARTED: 'tests_started',
             TESTS_PASSED: 'tests_passed',
             TESTS_FAILED: 'tests_failed',
-            CODE_ERROR: 'code_error',
-            CODE_WARNING: 'code_warning',
-            CODE_QUALITY_CHECK: 'code_quality_check',
             TIME_TICK: 'time_tick',
-            DEADLINE_APPROACHING: 'deadline_approaching',
-            DEADLINE_MISSED: 'deadline_missed',
-            STATE_UPDATED: 'state_updated',
             SYSTEM_READY: 'system_ready',
-            SYSTEM_ERROR: 'system_error',
             NARRATION_SHOWN: 'narration_shown',
             NARRATION_HIDDEN: 'narration_hidden',
         };
@@ -1078,9 +1051,7 @@
         class Bus {
             constructor() {
                 this.subscriptions = {};
-                this.eventHistory = [];
                 this.subscriptionCounter = 0;
-                this.maxHistorySize = 100;
             }
 
             subscribe(eventType, handler, subscriberId = 'anonymous') {
@@ -1114,11 +1085,6 @@
                     timestamp: Date.now(),
                 };
 
-                this.eventHistory.push(event);
-                if (this.eventHistory.length > this.maxHistorySize) {
-                    this.eventHistory.shift();
-                }
-
                 const subscribers = this.subscriptions[eventType] || [];
                 const wildcardSubscribers = this.subscriptions['*'] || [];
 
@@ -1131,21 +1097,6 @@
                 });
             }
 
-            getRecentEvents(count = 10, eventType = null) {
-                let events = this.eventHistory;
-                if (eventType) {
-                    events = events.filter((e) => e.type === eventType);
-                }
-                return events.slice(-count);
-            }
-
-            getEventsByType(eventType) {
-                return this.eventHistory.filter((e) => e.type === eventType);
-            }
-
-            clear() {
-                this.eventHistory = [];
-            }
         }
 
         const bus = new Bus();
@@ -1234,12 +1185,7 @@
                     },
                     ui: {
                         messages: [],
-                        notifications: [],
                         codeEditorContent: '',
-                        terminalOutput: [],
-                        activePanel: 'code',
-                        userTyping: false,
-                        typingPreview: '',
                     },
                 };
             }
@@ -1356,17 +1302,6 @@
                             [skillName]: newLevel,
                         },
                     },
-                });
-            }
-
-            recordUserAction(action) {
-                const actions = [...(this.state.user.actionsHistory || []), {
-                    ...action,
-                    timestamp: Date.now(),
-                }];
-
-                this.updateState({
-                    user: { actionsHistory: actions },
                 });
             }
 
@@ -1556,20 +1491,8 @@
                 return baseMessage;
             }
 
-            observeState() {
-                return ws.getState();
-            }
-
             updateAgentState(updates) {
                 ws.updateAgent(this.id, updates);
-            }
-
-            getMetrics() {
-                return {
-                    messageCount: this.messageCount,
-                    memorySize: this.memory.length,
-                    lastActionTime: this.lastActionTime,
-                };
             }
 
             destroy() {
@@ -1733,7 +1656,6 @@
                     responseDelay: 1500,
                 });
 
-                this.checkInInterval = null;
                 this.subscribeToEvents([
                     ET.SCENARIO_PHASE_CHANGE,
                     ET.TESTS_PASSED,
@@ -2046,23 +1968,15 @@ Developer working on fix...`,
                     responseDelay: 1500,
                 });
 
-                this.subscribeToEvents([
-                    'USER_CODE_QUESTION',
-                    ET.USER_CODE_CHANGE,
-                ]);
+                this.subscribeToEvents(['USER_CODE_QUESTION']);
             }
 
             shouldReact(event) {
-                return event.type === 'USER_CODE_QUESTION' ||
-                       (event.type === ET.USER_CODE_CHANGE && this.detectCodeIssue(event.payload.code));
+                return event.type === 'USER_CODE_QUESTION';
             }
 
             react(event) {
-                if (event.type === 'USER_CODE_QUESTION') {
-                    this.onUserCodeQuestion(event.payload);
-                } else if (event.type === ET.USER_CODE_CHANGE) {
-                    this.onCodeChange(event.payload);
-                }
+                this.onUserCodeQuestion(event.payload);
             }
 
             onUserCodeQuestion(payload) {
@@ -2083,9 +1997,7 @@ Developer working on fix...`,
                     response = this.generalHelp(question, code);
                 }
 
-                setTimeout(() => {
-                    this.sendMessage(response, { type: 'code_assistance', agentIcon: '🤖' });
-                }, this.config.responseDelay);
+                this.sendMessage(response, { type: 'code_assistance', agentIcon: '🤖' });
             }
 
             provideSyntaxHelp(question, code) {
@@ -2152,15 +2064,6 @@ Your current goal is to fix the validation bug first, then we can refine!`;
 
 What specific part of the payment validation would you like to work on?`;
             }
-
-            detectCodeIssue(code) {
-
-                return false;
-            }
-
-            onCodeChange(payload) {
-
-            }
         }
 
         class Orch {
@@ -2171,8 +2074,6 @@ What specific part of the payment validation would you like to work on?`;
             }
 
             initialize() {
-                console.log('[Orch] Initializing agents...');
-
                 this.agents = {
                     senior_dev: new Senior(),
                     pm: new Manager(),
@@ -2181,14 +2082,9 @@ What specific part of the payment validation would you like to work on?`;
                     code_assistant: new Assist(),
                 };
 
-                ws.subscribe(() => {
-
-                });
-
                 this.startTimeTicker();
 
                 this.initialized = true;
-                console.log('[Orch] Agents initialized');
 
                 bus.publish(ET.SYSTEM_READY);
             }
@@ -2200,14 +2096,6 @@ What specific part of the payment validation would you like to work on?`;
                         elapsed: ws.getState().scenario.timeElapsed,
                     });
                 }, 1000);
-            }
-
-            getAgent(agentId) {
-                return this.agents[agentId];
-            }
-
-            getAllAgents() {
-                return this.agents;
             }
 
             restart() {
@@ -2472,36 +2360,28 @@ def process_payment(amount):
         class Demo {
             constructor() {
                 this.isPlaying = false;
-                this.currentIndex = 0;
-                this.startTime = null;
                 this.timers = [];
             }
 
             start() {
                 if (this.isPlaying) return;
 
-                console.log('[Demo] Starting choreographed demo...');
                 this.isPlaying = true;
-                this.currentIndex = 0;
-                this.startTime = Date.now();
 
                 this.scheduleActions();
             }
 
             scheduleActions() {
-                flow.forEach((action, index) => {
+                flow.forEach((action) => {
                     const delay = action.time * 1000;
                     const timer = setTimeout(() => {
-                        this.executeAction(action, index);
+                        this.executeAction(action);
                     }, delay);
                     this.timers.push(timer);
                 });
             }
 
-            executeAction(action, index) {
-                console.log(`[Demo] Executing action ${index}:`, action.type);
-                this.currentIndex = index;
-
+            executeAction(action) {
                 switch (action.type) {
                     case 'show_narration':
                         this.showNarration(action.narration);
@@ -2532,31 +2412,7 @@ def process_payment(amount):
             }
 
             showTypingMessage(content, duration) {
-                ws.updateState({
-                    ui: { userTyping: true },
-                });
-
-                let currentText = '';
-                const chars = content.split('');
-                const charDelay = duration / chars.length;
-
-                chars.forEach((char, i) => {
-                    setTimeout(() => {
-                        currentText += char;
-                        ws.updateState({
-                            ui: { typingPreview: currentText },
-                        });
-                    }, charDelay * i);
-                });
-
                 setTimeout(() => {
-                    ws.updateState({
-                        ui: {
-                            userTyping: false,
-                            typingPreview: '',
-                        },
-                    });
-
                     ws.addMessage({
                         agentId: 'user',
                         agentRole: 'You',
@@ -2650,12 +2506,9 @@ def process_payment(amount):
             }
 
             stop() {
-                console.log('[Demo] Stopping demo...');
                 this.timers.forEach(timer => clearTimeout(timer));
                 this.timers = [];
                 this.isPlaying = false;
-                this.currentIndex = 0;
-                this.startTime = null;
             }
         }
 
@@ -3294,7 +3147,6 @@ def process_payment(amount):
                     </div>
                 `;
 
-                console.log('Initializing SimuWork Platform...');
                 orch.initialize();
 
                 drawApp();
