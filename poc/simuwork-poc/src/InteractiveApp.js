@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import CodeEditor from './components/interactive/CodeEditor';
 import AgentMessages from './components/interactive/AgentMessages';
-import DecisionPanel from './components/interactive/DecisionPanel';
 import TerminalOutput from './components/interactive/TerminalOutput';
 import ObjectivesPanel from './components/interactive/ObjectivesPanel';
 import TooltipGuide from './components/interactive/TooltipGuide';
@@ -17,7 +16,6 @@ import './InteractiveApp.css';
 
 const InteractiveApp = () => {
   const [isInitialized, setIsInitialized] = useState(false);
-  const [pendingDecision, setPendingDecision] = useState(null);
   const [scenarioComplete, setScenarioComplete] = useState(false);
   const [demoStarted, setDemoStarted] = useState(false);
   const [currentNarration, setCurrentNarration] = useState(null);
@@ -27,11 +25,6 @@ const InteractiveApp = () => {
     console.log('Initializing SimuWork Living Platform...');
     agentOrchestrator.initialize();
     setIsInitialized(true);
-
-    // Subscribe to pending decisions
-    const unsubState = worldState.subscribe((newState) => {
-      setPendingDecision(newState.ui.pendingDecision);
-    });
 
     // Subscribe to scenario completion
     const unsubComplete = eventBus.subscribe(EventTypes.SCENARIO_COMPLETE, () => {
@@ -50,7 +43,6 @@ const InteractiveApp = () => {
 
     // Cleanup on unmount
     return () => {
-      unsubState();
       unsubComplete();
       unsubReady();
       unsubNarration();
@@ -61,7 +53,6 @@ const InteractiveApp = () => {
 
   const handleRestart = () => {
     setScenarioComplete(false);
-    setPendingDecision(null);
     setDemoStarted(false);
     demoController.stop();
     guideController.reset();
@@ -72,10 +63,6 @@ const InteractiveApp = () => {
     // Start the demo - narrations will appear automatically
     setDemoStarted(true);
     demoController.start();
-  };
-
-  const handleDecisionMade = (decision) => {
-    setPendingDecision(null);
   };
 
   if (!isInitialized) {
@@ -143,16 +130,6 @@ const InteractiveApp = () => {
       <AnimatePresence>
         {currentNarration && (
           <TooltipGuide narration={currentNarration} />
-        )}
-      </AnimatePresence>
-
-      {/* Decision overlay */}
-      <AnimatePresence>
-        {pendingDecision && (
-          <DecisionPanel
-            decision={pendingDecision}
-            onDecisionMade={handleDecisionMade}
-          />
         )}
       </AnimatePresence>
 
