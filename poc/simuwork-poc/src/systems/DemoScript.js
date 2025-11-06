@@ -80,7 +80,7 @@ export const demoScript = [
       agent: 'Student Interaction',
       agentIcon: '👤',
       description: 'Students can ask questions and get instant, personalized feedback from AI mentors.',
-      position: 'messages',
+      position: 'chat_input',
       color: 'green',
       duration: 5000,
     },

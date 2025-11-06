@@ -17,10 +17,11 @@ const TooltipGuide = ({ narration }) => {
       'bottom-left': { bottom: '80px', left: '20px' },
       'bottom-center': { bottom: '80px', left: '50%', transform: 'translateX(-50%)' },
       'bottom-right': { bottom: '80px', right: '20px' },
-      'objectives': { top: '120px', left: '40px' },
-      'code': { top: '150px', left: '50%', transform: 'translateX(-50%)' },
-      'messages': { top: '120px', right: '40px' },
-      'terminal': { bottom: '120px', left: '40px' }
+      'objectives': { top: '120px', left: '180px', transform: 'translateX(-50%)' },
+      'terminal': { top: 'calc(100vh - 350px)', left: '180px', transform: 'translateX(-50%)' },
+      'code': { top: '120px', left: 'calc(320px + (100vw - 320px - 400px) / 2)', transform: 'translateX(-50%)' },
+      'messages': { top: '120px', right: '180px', transform: 'translateX(50%)' },
+      'chat_input': { bottom: '80px', right: '180px', transform: 'translateX(50%)' },
     };
     return positions[narration.position] || positions['center'];
   };
