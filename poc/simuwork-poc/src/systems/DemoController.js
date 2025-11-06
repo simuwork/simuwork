@@ -3,6 +3,7 @@
 import { demoScript } from './DemoScript';
 import { worldState } from './WorldState';
 import { eventBus, EventTypes } from './EventBus';
+import { guideController } from './GuideController';
 
 class DemoController {
   constructor() {
@@ -47,6 +48,10 @@ class DemoController {
     this.currentIndex = index;
 
     switch (action.type) {
+      case 'show_narration':
+        this.showNarration(action.narration);
+        break;
+
       case 'user_message':
         this.showTypingMessage(action.content, action.typingDuration || 2000);
         break;
@@ -74,6 +79,11 @@ class DemoController {
       default:
         console.warn('[DemoController] Unknown action type:', action.type);
     }
+  }
+
+  // Show narration tooltip
+  showNarration(narration) {
+    guideController.showNarration(narration);
   }
 
   // Show typing animation then user message

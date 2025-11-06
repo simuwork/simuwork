@@ -174,6 +174,10 @@ export const EventTypes = {
   // System events
   SYSTEM_READY: 'system_ready',
   SYSTEM_ERROR: 'system_error',
+
+  // Guide events
+  NARRATION_SHOWN: 'narration_shown',
+  NARRATION_HIDDEN: 'narration_hidden',
 };
 
 // Singleton instance

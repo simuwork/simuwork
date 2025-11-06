@@ -7,10 +7,12 @@ import AgentMessages from './components/interactive/AgentMessages';
 import DecisionPanel from './components/interactive/DecisionPanel';
 import TerminalOutput from './components/interactive/TerminalOutput';
 import ObjectivesPanel from './components/interactive/ObjectivesPanel';
+import TooltipGuide from './components/interactive/TooltipGuide';
 import { agentOrchestrator } from './systems/AgentOrchestrator';
 import { worldState } from './systems/WorldState';
 import { eventBus, EventTypes } from './systems/EventBus';
 import { demoController } from './systems/DemoController';
+import { guideController } from './systems/GuideController';
 import './InteractiveApp.css';
 
 const InteractiveApp = () => {
@@ -18,6 +20,7 @@ const InteractiveApp = () => {
   const [pendingDecision, setPendingDecision] = useState(null);
   const [scenarioComplete, setScenarioComplete] = useState(false);
   const [demoStarted, setDemoStarted] = useState(false);
+  const [currentNarration, setCurrentNarration] = useState(null);
 
   useEffect(() => {
     // Initialize the agent system
@@ -40,12 +43,19 @@ const InteractiveApp = () => {
       console.log('System ready!');
     });
 
+    // Subscribe to narration changes
+    const unsubNarration = guideController.subscribe((narration) => {
+      setCurrentNarration(narration);
+    });
+
     // Cleanup on unmount
     return () => {
       unsubState();
       unsubComplete();
       unsubReady();
+      unsubNarration();
       agentOrchestrator.destroy();
+      guideController.reset();
     };
   }, []);
 
@@ -54,10 +64,12 @@ const InteractiveApp = () => {
     setPendingDecision(null);
     setDemoStarted(false);
     demoController.stop();
+    guideController.reset();
     agentOrchestrator.restart();
   };
 
   const handleStartDemo = () => {
+    // Start the demo - narrations will appear automatically
     setDemoStarted(true);
     demoController.start();
   };
@@ -126,6 +138,13 @@ const InteractiveApp = () => {
           </section>
         </div>
       </main>
+
+      {/* Automatic Narration Tooltips */}
+      <AnimatePresence>
+        {currentNarration && (
+          <TooltipGuide narration={currentNarration} />
+        )}
+      </AnimatePresence>
 
       {/* Decision overlay */}
       <AnimatePresence>

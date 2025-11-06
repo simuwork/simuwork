@@ -1,12 +1,45 @@
 // DemoScript.js - Choreographed demo script for pitch presentation
 
 export const demoScript = [
+  // Opening narration
+  {
+    time: 0,
+    type: 'show_narration',
+    narration: {
+      agent: 'SimuWork AI',
+      agentIcon: '🎯',
+      title: 'Welcome to SimuWork',
+      description: 'Watch as multiple AI agents work together to mentor you through a real Payment API debugging challenge.',
+      position: 'top-center',
+      color: 'blue',
+      duration: 5000,
+    },
+  },
+
   // Phase 1: Orientation & Initial Context
   {
     time: 3,
     type: 'agent_message',
     agentId: 'incident',
     trigger: 'auto',
+  },
+  {
+    time: 4,
+    type: 'show_narration',
+    narration: {
+      agent: 'Incident Agent',
+      agentIcon: '🚨',
+      description: 'The Incident Agent detects a critical bug and alerts the team automatically.',
+      position: 'messages',
+      color: 'orange',
+      duration: 5000,
+      spotlight: {
+        top: '110px',
+        right: '20px',
+        width: '380px',
+        height: '150px'
+      }
+    },
   },
   {
     time: 8,
@@ -20,6 +53,18 @@ export const demoScript = [
     agentId: 'senior_dev',
     trigger: 'initial_guidance',
   },
+  {
+    time: 13,
+    type: 'show_narration',
+    narration: {
+      agent: 'Senior Engineer AI',
+      agentIcon: '💻',
+      description: 'The Senior Engineer AI provides guidance and helps you investigate the code.',
+      position: 'messages',
+      color: 'blue',
+      duration: 5000,
+    },
+  },
 
   // Phase 2: User Investigation
   {
@@ -27,6 +72,18 @@ export const demoScript = [
     type: 'user_message',
     content: "What's causing the payment validation failures?",
     typingDuration: 2000,
+  },
+  {
+    time: 19,
+    type: 'show_narration',
+    narration: {
+      agent: 'Student Interaction',
+      agentIcon: '👤',
+      description: 'Students can ask questions and get instant, personalized feedback from AI mentors.',
+      position: 'messages',
+      color: 'green',
+      duration: 5000,
+    },
   },
   {
     time: 21,
@@ -120,6 +177,24 @@ def process_payment(amount):
     return "Success"`,
   },
   {
+    time: 83,
+    type: 'show_narration',
+    narration: {
+      agent: 'Code Editor',
+      agentIcon: '⌨️',
+      description: 'The student writes code with real-time AI analysis checking for bugs and security issues.',
+      position: 'code',
+      color: 'purple',
+      duration: 5000,
+      spotlight: {
+        top: '110px',
+        left: '340px',
+        right: '420px',
+        height: '400px'
+      }
+    },
+  },
+  {
     time: 85,
     type: 'agent_message',
     agentId: 'senior_dev',
@@ -130,6 +205,24 @@ def process_payment(amount):
   {
     time: 90,
     type: 'run_tests',
+  },
+  {
+    time: 91,
+    type: 'show_narration',
+    narration: {
+      agent: 'Testing Agent',
+      agentIcon: '🧪',
+      description: 'The Testing Agent automatically runs tests and provides instant feedback on code quality.',
+      position: 'terminal',
+      color: 'green',
+      duration: 5000,
+      spotlight: {
+        bottom: '80px',
+        left: '20px',
+        width: '300px',
+        height: '250px'
+      }
+    },
   },
   {
     time: 93,
@@ -156,6 +249,20 @@ def process_payment(amount):
     type: 'agent_message',
     agentId: 'incident',
     message: "✅ All tests passed!\n\n🎉 INCIDENT CLOSED\nTotal Duration: ~2 minutes\nResolution: Payment validation logic updated\nCredential Awarded: Backend Debugging - Payments API",
+  },
+  {
+    time: 109,
+    type: 'show_narration',
+    narration: {
+      agent: 'SimuWork',
+      agentIcon: '🎉',
+      title: 'Challenge Complete!',
+      description: 'Students earn verified credentials proving they successfully completed real-world company challenges.',
+      position: 'top-center',
+      color: 'green',
+      highlight: 'Employer-recognized credentials that stand out on resumes',
+      duration: 6000,
+    },
   },
   {
     time: 112,
