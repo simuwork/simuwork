@@ -1,1 +1,0 @@
-export { TechStackSimulator } from './TechStackSimulator';

@@ -1,32 +1,9 @@
-# SimuWork
+# SimuWork Simulation Preview
 
-SimuWork is a Vite-powered React + TypeScript playground that showcases an AI-assisted tech stack simulator. The project uses Tailwind CSS for styling and Lucide icons for UI polish.
+<p align="center">
+  <img src="docs/logo.png" alt="SimuWork logo" width="140" />
+</p>
 
-## Prerequisites
+SimuWork is a proof-of-concept simulation built for the Business Fundamentals for Engineers program at Duke. The project packages a marketing-style overview and an interactive job simulation that help engineering students practice business-critical decision making around software incidents. 
 
-- Node.js 18 or newer
-- npm (bundled with Node) or an alternative such as pnpm/yarn
-
-## Getting Started
-
-```bash
-npm install
-npm run dev
-```
-
-The dev server will start on [http://localhost:5173](http://localhost:5173). Use `npm run build` for production bundles and `npm run preview` to serve the built output locally.
-
-## Project Structure
-
-```
-src/
-  components/       # UI building blocks
-  data/             # Static scenario + stack definitions
-  hooks/            # Shared React hooks
-  styles/           # Tailwind entrypoint
-  types/            # Domain-specific TypeScript types
-```
-
-Tailwind configuration lives in `tailwind.config.ts`, while PostCSS is configured via `postcss.config.js`.
-
-
+Preview the project live at [simuwork.github.io](https://simuwork.github.io).
