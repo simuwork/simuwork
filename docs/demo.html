@@ -782,6 +782,14 @@
             border-left-color: #a855f7;
             background: rgba(168, 85, 247, 0.1);
         }
+        .message.user_code_question {
+            border-left-color: #9333ea;
+            background: rgba(147, 51, 234, 0.1);
+        }
+        .message.code_assistance {
+            border-left-color: #9333ea;
+            background: rgba(147, 51, 234, 0.08);
+        }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -825,8 +833,11 @@
         /* AI Input Boxes */
         .ai-input-container {
             padding: 16px;
-            background: rgba(255, 255, 255, 0.03);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0 0 16px 16px;
+            margin-top: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
         }
 
         .ai-input-header {
@@ -2983,6 +2994,7 @@ def process_payment(amount):
                 pm: '👩‍💼',
                 junior_dev: '🧑‍💻',
                 incident: '🚨',
+                code_assistant: '🤖',
                 user: '👤',
             };
 
@@ -2991,6 +3003,7 @@ def process_payment(amount):
                 pm: 'Sarah (Product Manager)',
                 junior_dev: 'Alex (Junior Developer)',
                 incident: 'Incident Monitor',
+                code_assistant: 'Code Assistant AI',
                 user: 'You',
             };
 
@@ -3043,30 +3056,169 @@ def process_payment(amount):
             }
         }
 
-        // Component: ChatInput
-        function renderChatInput() {
-            const container = document.getElementById('chat-input');
+        // Component: Code Assistant Input (under code editor)
+        function renderCodeAssistantInput() {
+            const container = document.getElementById('code-assistant-input');
             if (!container) return;
 
-            const state = worldState.getState();
-            const typing = state.ui.userTyping;
-            const preview = state.ui.typingPreview;
-
             container.innerHTML = `
-                <div class="chat-input-container">
-                    <div class="chat-input-wrapper">
-                        ${typing ? `
-                            <div class="typing-preview">
-                                ${preview}<span class="typing-cursor"></span>
-                            </div>
-                        ` : `
-                            <div class="typing-preview" style="color: rgba(255, 255, 255, 0.4);">
-                                Ask the team a question...
-                            </div>
-                        `}
+                <div class="ai-input-container code-assistant-input">
+                    <div class="ai-input-header">
+                        <span class="ai-input-icon">🤖</span>
+                        <span>AI Code Assistant</span>
+                    </div>
+                    <div class="ai-input-wrapper" id="code-input-wrapper">
+                        <input
+                            type="text"
+                            class="ai-input-field"
+                            id="code-input-field"
+                            placeholder="Ask about syntax, debugging, or improvements..."
+                        />
+                        <button class="ai-input-send" id="code-input-send">Send</button>
                     </div>
                 </div>
             `;
+
+            // Add event listeners
+            const wrapper = document.getElementById('code-input-wrapper');
+            const input = document.getElementById('code-input-field');
+            const sendBtn = document.getElementById('code-input-send');
+
+            if (input) {
+                input.addEventListener('focus', () => {
+                    wrapper.classList.add('active');
+                });
+
+                input.addEventListener('blur', () => {
+                    if (!input.value.trim()) {
+                        wrapper.classList.remove('active');
+                    }
+                });
+
+                input.addEventListener('input', () => {
+                    if (input.value.trim()) {
+                        wrapper.classList.add('active');
+                    } else {
+                        wrapper.classList.remove('active');
+                    }
+                });
+
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && input.value.trim()) {
+                        sendCodeQuestion();
+                    }
+                });
+            }
+
+            if (sendBtn) {
+                sendBtn.addEventListener('click', sendCodeQuestion);
+            }
+
+            function sendCodeQuestion() {
+                const question = input.value.trim();
+                if (!question) return;
+
+                // Add user message to chat
+                worldState.addMessage({
+                    agentId: 'user',
+                    agentRole: 'You',
+                    content: question,
+                    type: 'user_code_question',
+                });
+
+                // Publish event for code assistant
+                eventBus.publish('USER_CODE_QUESTION', {
+                    question,
+                    code: worldState.getState().ui.codeEditorContent,
+                    timestamp: Date.now(),
+                }, 'user');
+
+                // Clear input
+                input.value = '';
+                wrapper.classList.remove('active');
+            }
+        }
+
+        // Component: Team Chat Input (under team messages)
+        function renderTeamChatInput() {
+            const container = document.getElementById('team-chat-input');
+            if (!container) return;
+
+            container.innerHTML = `
+                <div class="ai-input-container team-chat-input">
+                    <div class="ai-input-header">
+                        <span class="ai-input-icon">💬</span>
+                        <span>Team Discussion</span>
+                    </div>
+                    <div class="ai-input-wrapper" id="team-input-wrapper">
+                        <input
+                            type="text"
+                            class="ai-input-field"
+                            id="team-input-field"
+                            placeholder="Ask the team about approach, priorities, or decisions..."
+                        />
+                        <button class="ai-input-send" id="team-input-send">Send</button>
+                    </div>
+                </div>
+            `;
+
+            // Add event listeners
+            const wrapper = document.getElementById('team-input-wrapper');
+            const input = document.getElementById('team-input-field');
+            const sendBtn = document.getElementById('team-input-send');
+
+            if (input) {
+                input.addEventListener('focus', () => {
+                    wrapper.classList.add('active');
+                });
+
+                input.addEventListener('blur', () => {
+                    if (!input.value.trim()) {
+                        wrapper.classList.remove('active');
+                    }
+                });
+
+                input.addEventListener('input', () => {
+                    if (input.value.trim()) {
+                        wrapper.classList.add('active');
+                    } else {
+                        wrapper.classList.remove('active');
+                    }
+                });
+
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && input.value.trim()) {
+                        sendTeamQuestion();
+                    }
+                });
+            }
+
+            if (sendBtn) {
+                sendBtn.addEventListener('click', sendTeamQuestion);
+            }
+
+            function sendTeamQuestion() {
+                const question = input.value.trim();
+                if (!question) return;
+
+                // Add user message to chat
+                worldState.addMessage({
+                    agentId: 'user',
+                    agentRole: 'You',
+                    content: question,
+                    type: 'user_message',
+                });
+
+                // Publish event for team agents
+                eventBus.publish(EventTypes.USER_ASK_QUESTION, {
+                    question,
+                    timestamp: Date.now(),
+                }, 'user');
+
+                // Clear input
+                input.value = '';
+                wrapper.classList.remove('active');
+            }
         }
 
         // Component: TooltipGuide - Fixed to prevent flickering
@@ -3120,9 +3272,10 @@ def process_payment(amount):
         function renderApp() {
             renderObjectivesPanel();
             renderCodeEditor();
+            renderCodeAssistantInput(); // AI coding help under editor
             renderTerminalOutput();
             renderAgentMessages(); // Now only appends new messages
-            renderChatInput();
+            renderTeamChatInput(); // Team discussion under messages
             // renderTooltipGuide is handled by guideController.subscribe() - removed to prevent flickering
         }
 
@@ -3200,18 +3353,19 @@ def process_payment(amount):
 
                         <div class="center-column">
                             <section class="section code-section" id="code-editor"></section>
+                            <div id="code-assistant-input"></div>
                         </div>
 
                         <div class="right-column">
                             <section class="section messages-section" id="agent-messages"></section>
+                            <div id="team-chat-input"></div>
                         </div>
                     </main>
 
                     <div id="tooltip-guide"></div>
-                    <div id="chat-input"></div>
 
                     <footer class="app-footer">
-                        <p class="footer-text">💡 This is a living simulation - AI agents are responding in real-time</p>
+                        <p class="footer-text">💡 Train your critical thinking with AI assistance - Ask questions, get help, and learn by doing</p>
                     </footer>
                 </div>
             `;
