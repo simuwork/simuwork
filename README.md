@@ -6,4 +6,6 @@
 
 SimuWork is a proof-of-concept simulation built for the Business Fundamentals for Engineers program at Duke. The project packages a marketing-style overview and an interactive job simulation that help engineering students practice business-critical decision making around software incidents. 
 
+`demo.html` runs an automated, scripted walkthrough of the simulation. It is designed to autoplay so visitors can watch the full scenario unfold without touching the keyboard—text inputs and buttons are intentionally locked to keep the focus on the animation.
+
 Preview the project live at [simuwork.github.io](https://simuwork.github.io/simuwork).
