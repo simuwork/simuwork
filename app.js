@@ -1,5 +1,38 @@
+        // ===== DOM helpers =====
         const $ = id => document.getElementById(id);
         const qs = sel => document.querySelector(sel);
+        const IS_DEMO_MODE = document.body && document.body.classList && document.body.classList.contains('demo-mode');
+
+        function applyDemoInputLock({ wrapper, input, sendBtn, noticeId }) {
+            if (!IS_DEMO_MODE || !wrapper) return;
+
+            wrapper.setAttribute('role', 'group');
+            wrapper.setAttribute('aria-disabled', 'true');
+            wrapper.dataset.demoLocked = 'true';
+
+            if (noticeId && !document.getElementById(noticeId)) {
+                const notice = document.createElement('span');
+                notice.id = noticeId;
+                notice.className = 'sr-only';
+                notice.textContent = 'Demo playback only: controls are locked and shown for illustration.';
+                wrapper.prepend(notice);
+            }
+
+            if (input) {
+                input.setAttribute('readonly', 'readonly');
+                input.setAttribute('aria-readonly', 'true');
+                if (noticeId) {
+                    input.setAttribute('aria-describedby', noticeId);
+                }
+                input.setAttribute('tabindex', '-1');
+            }
+
+            if (sendBtn) {
+                sendBtn.setAttribute('aria-hidden', 'true');
+                sendBtn.setAttribute('tabindex', '-1');
+                sendBtn.setAttribute('disabled', 'true');
+            }
+        }
 
         // Icon helper function using Lucide Icons
         function renderIcon(iconName, size = 24, color = 'currentColor', className = '') {
@@ -115,6 +148,7 @@
             return null;
         }
 
+        // ===== Event types =====
         const ET = {
             USER_CODE_CHANGE: 'ucc',
             USER_RUN_TESTS: 'urt',
@@ -137,6 +171,7 @@
             NARRATION_HIDDEN: 'nh',
         };
 
+        // ===== Lightweight event bus =====
         class Bus {
             constructor(){this.subscriptions={};this.subscriptionCounter=0;}
             subscribe(eventType,handler,subscriberId='anonymous'){if(!this.subscriptions[eventType]) this.subscriptions[eventType]=[];const subscriptionId=`${subscriberId}_${this.subscriptionCounter++}`;this.subscriptions[eventType].push({id:subscriptionId,handler,subscriberId});return()=>this.unsubscribe(eventType,subscriptionId);}
@@ -146,6 +181,7 @@
 
         const bus = new Bus();
 
+        // ===== Application state management =====
         class State {
             constructor(){this.state=this.getInitialState();this.listeners=[];}
             getInitialState(){return{user:{id:'student_1',skillLevels:{debugging:5,systemDesign:4,testing:4,communication:5,problemSolving:5},reputation:75,completedScenarios:[],learningStyle:'hands-on'},world:{company:{name:'PayFlow',type:'Fintech Startup',techStack:['Python','Django','PostgreSQL','React']},incidents:[],techDebt:[],recentEvents:[],timeElapsed:0},scenario:{id:'payment_api_debug',type:'debugging',difficulty:'intermediate',phase:'orientation',timeElapsed:0,objectives:[{id:'obj_1',text:'Understand the payment validation bug',completed:false},{id:'obj_2',text:'Fix the validation logic',completed:false},{id:'obj_3',text:'Ensure all tests pass',completed:false}],codebase:{currentFile:'payments/utils.py',hasChanges:false,testsPass:false}},agents:{senior_dev:{mood:'focused',focus:'code_review',memory:[],relationship:50,availability:'available'},pm:{mood:'concerned',focus:'incident_management',memory:[],relationship:50,availability:'available',stress:30},junior_dev:{mood:'curious',focus:'learning',memory:[],relationship:50,availability:'available',askedForHelp:false},incident:{mood:'monitoring',focus:'incident_tracking',memory:[],relationship:50,availability:'active',escalated:false}},ui:{messages:[],codeEditorContent:''}};}
@@ -167,6 +203,7 @@
         const ws = new State();
         ws.updateState({ ui: { isUserTyping: false } }); // Initialize typing state
 
+        // ===== Narration & guide controls =====
         class Guide {
             constructor() {
                 this.currentNarration = null;
@@ -1730,6 +1767,19 @@ def process_payment(amount):
             const input = $('code-input-field');
             const sendBtn = $('code-input-send');
             const typingIndicator = $('code-typing-indicator');
+
+            applyDemoInputLock({
+                wrapper,
+                input,
+                sendBtn,
+                noticeId: 'code-input-readonly'
+            });
+
+            if (IS_DEMO_MODE) {
+                initIcons(container);
+                return;
+            }
+
             let typingTimer;
 
             const showTypingIndicator = () => {
@@ -1852,6 +1902,19 @@ def process_payment(amount):
             const input = $('team-input-field');
             const sendBtn = $('team-input-send');
             const typingIndicator = $('team-typing-indicator');
+            
+            applyDemoInputLock({
+                wrapper,
+                input,
+                sendBtn,
+                noticeId: 'team-input-readonly'
+            });
+
+            if (IS_DEMO_MODE) {
+                initIcons(container);
+                return;
+            }
+
             let typingTimer;
 
             const showTypingIndicator = () => {
@@ -2547,4 +2610,3 @@ def process_payment(amount):
         } else {
             init();
         }
-
